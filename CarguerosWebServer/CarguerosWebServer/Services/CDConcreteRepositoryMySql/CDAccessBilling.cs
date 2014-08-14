@@ -21,7 +21,7 @@ namespace CarguerosWebServer.Services
 
         public override Billing[] showAllBilling()
         {
-            DataSet dataSet = mySQLConnection.makeQuery("SELECT * FROM universidad.estudiante;"); 
+            DataSet dataSet = mySQLConnection.makeQuery("SELECT * FROM billing.billing;"); 
             List<Billing> listBilling = getTableBilling(dataSet);    
             var ctx = HttpContext.Current;            
             if (ctx != null)
@@ -42,12 +42,13 @@ namespace CarguerosWebServer.Services
             foreach (DataTable table in dataSet.Tables)
             {
                 foreach (DataRow row in table.Rows)
-                {
+                {          
+                   // row.Field<>;
                     int idBilling = Convert.ToInt32(row[0]);
-                    int tax = Convert.ToInt32(row[1].ToString());
-                    int costStorage = Convert.ToInt32(row[2].ToString());
-                    int discount = Convert.ToInt32(row[3].ToString());
-                    int freight = Convert.ToInt32(row[4].ToString());                   
+                    int tax = Convert.ToInt32(row[1]);
+                    int costStorage = Convert.ToInt32(row[2]);
+                    int discount = Convert.ToInt32(row[3]);
+                    int freight = Convert.ToInt32(row[4]);                   
                     listBilling.Add(new Billing{
                         idBilling = idBilling,
                         tax = tax,

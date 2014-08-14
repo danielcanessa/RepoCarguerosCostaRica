@@ -26,6 +26,8 @@ namespace CarguerosWebServer.Services
                 if (connectionMySQL == null)
                 {
                     connectionMySQL = new MySqlConnection("server=cargodispatcherdb.csmwl817fkzh.us-west-1.rds.amazonaws.com; user id=dcanessa; password=GUMS2011; database=CargoDispatcher; pooling=false;");
+                //    connectionMySQL = new MySqlConnection("server=localhost; user id=root; password=dcanessa; database=billing; pooling=false;");
+               
                 }
                 return instance;
             }

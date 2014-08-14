@@ -24,9 +24,16 @@ namespace CarguerosWebServer.Controllers
        
         [HttpGet]
         [ActionName("1")]
-        public Customer[] allBilling()
+         public Customer[] allCustomer()
         {    
             return customerRepository.showAllCustomer();            
-        }      
+        }
+
+        [HttpGet]
+        [ActionName("2")]
+        public Customer[] loginCustomer(String password, int account)
+        {
+            return customerRepository.loginCustomer(password,account);
+        }     
     }
 }

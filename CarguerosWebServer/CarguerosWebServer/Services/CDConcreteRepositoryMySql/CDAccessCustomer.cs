@@ -19,7 +19,7 @@ namespace CarguerosWebServer.Services
 
         public override Customer[] showAllCustomer()
         {
-            DataSet dataSet = mySQLConnection.makeQuery("SELECT * FROM universidad.estudiante;");
+            DataSet dataSet = mySQLConnection.makeQuery("SELECT * FROM billing.customer;");
             List<Customer> listCustomer = getTableCustomer(dataSet);
             var ctx = HttpContext.Current;
             if (ctx != null)
@@ -32,6 +32,24 @@ namespace CarguerosWebServer.Services
             return GetCustomer();
         }
 
+        
+
+        public override Customer[] loginCustomer(String password, int account)
+        {
+            DataSet dataSet = mySQLConnection.makeQuery("CALL `Login_Customer`('"+password+"',"+account+")");
+            List<Customer> listCustomer = getTableCustomer(dataSet);
+            var ctx = HttpContext.Current;
+            if (ctx != null)
+            {
+                if (ctx.Cache[CacheKey] == null)
+                {
+                    ctx.Cache[CacheKey] = listCustomer.ToArray();
+                }
+            }
+            return GetCustomer();
+        }
+
+
         public List<Customer> getTableCustomer(DataSet dataSet)
         {
             List<Customer> listCustomer = new List<Customer>();
@@ -40,15 +58,20 @@ namespace CarguerosWebServer.Services
                 foreach (DataRow row in table.Rows)
                 {
                     int account = Convert.ToInt32(row[0]);
-                    int personIdPerson = Convert.ToInt32(row[1]);
-                    int score = Convert.ToInt32(row[2]);
-                    int type = Convert.ToInt32(row[3]);
+                    String name = row[1].ToString();
+                    String lastName = row[2].ToString();
+                    String telephone = row[3].ToString();
+                    String type = row[4].ToString();
+                    int score = Convert.ToInt32(row[5]);
                     listCustomer.Add(new Customer
                     {
-                        account = account,
-                        personIdPerson = personIdPerson,
+                        account = account,                      
                         score = score,
-                        type = type
+                        type = type,
+                        name = name,
+                        telephone = telephone,
+                        lastName = lastName
+                    
                     }
                     );
                 }
@@ -68,10 +91,14 @@ namespace CarguerosWebServer.Services
         {
             new Customer
             {
-                account = 0,
-                personIdPerson = 0,
+                account = 0,   
                 score = 0,
-                type = 0
+                type = "",
+                name = "",
+                telephone = "",
+                lastName = ""
+
+                       
             }
         };
         }       

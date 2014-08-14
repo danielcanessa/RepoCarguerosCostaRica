@@ -12,6 +12,7 @@ namespace CarguerosWebServer.Services
     {
 
         public abstract Customer[] showAllCustomer();
+        public abstract Customer[]  loginCustomer(String password, int account);
 
     }
 
