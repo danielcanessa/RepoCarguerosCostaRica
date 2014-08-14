@@ -9,5 +9,7 @@ namespace CarguerosWebServer.Services
     public abstract class CDPackagesRepository
     {
         public abstract Packages[] showAllPackages();
+
+        public abstract Packages[] packagesPerUser(int account);
     }
 }

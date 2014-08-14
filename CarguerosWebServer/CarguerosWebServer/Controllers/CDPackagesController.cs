@@ -24,9 +24,16 @@ namespace CarguerosWebServer.Controllers
        
         [HttpGet]
         [ActionName("1")]
-        public Packages[] allPackages()
+        public Packages[] allPackagesAllUsers()
         {    
             return packagesRepository.showAllPackages();            
-        }      
+        }
+
+        [HttpGet]
+        [ActionName("2")]
+        public Packages[] allPackagesPerUser(int account)
+        {
+            return packagesRepository.packagesPerUser(account);
+        }   
     }
 }

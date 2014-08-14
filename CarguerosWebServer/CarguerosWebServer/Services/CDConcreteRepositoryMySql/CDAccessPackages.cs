@@ -34,6 +34,48 @@ namespace CarguerosWebServer.Services
             return GetPackages();
         }
 
+        public override Packages[] packagesPerUser(int account)
+        {
+            DataSet dataSet = mySQLConnection.makeQuery("CALL  `User_packages`("+account+");");
+            List<Packages> listPackages = getTablePackagesPerUser(dataSet);
+            var ctx = HttpContext.Current;
+            if (ctx != null)
+            {
+                if (ctx.Cache[CacheKey] == null)
+                {
+                    ctx.Cache[CacheKey] = listPackages.ToArray();
+                }
+            }
+            return GetPackages();
+        }
+
+        public List<Packages> getTablePackagesPerUser(DataSet dataSet)
+        {
+            List<Packages> listPackages = new List<Packages>();
+            foreach (DataTable table in dataSet.Tables)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    //Packages 
+
+                    int idPackages = Convert.ToInt32(row[0]);                  
+                    String description = row[1].ToString();
+
+                    listPackages.Add(new Packages
+                    {
+                        idPackages = idPackages,
+                        weight = 0,
+                        size = 0,
+                        price = 0,
+                        type = "-",
+                        description = description
+
+                    }
+                    );
+                }
+            }
+            return listPackages;
+        }
 
 
         public  List<Packages> getTablePackages(DataSet dataSet)
@@ -43,7 +85,7 @@ namespace CarguerosWebServer.Services
             {
                 foreach (DataRow row in table.Rows)
                 {
-
+                    //Packages 
 
                     int idPackages = Convert.ToInt32(row[0]);
                     int weight = Convert.ToInt32(row[1]);
@@ -83,8 +125,8 @@ namespace CarguerosWebServer.Services
                 weight = 0,
                 size = 0,
                 price = 0,
-                type = "",
-                description = ""
+                type = "-",
+                description = "-"
             }
         };
         }       
