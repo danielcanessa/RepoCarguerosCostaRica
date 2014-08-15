@@ -10,6 +10,8 @@ namespace CarguerosWebServer.Services
     {
         public abstract Packages[] showAllPackages();
 
-        public abstract Packages[] packagesPerUser(int account);
+        public abstract Packages[] packagesUser(int account);
+
+        public abstract Packages[] detailsPackages();
     }
 }

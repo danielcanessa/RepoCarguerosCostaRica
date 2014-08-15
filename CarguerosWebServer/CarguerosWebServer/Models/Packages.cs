@@ -13,6 +13,12 @@ namespace CarguerosWebServer.Models
         public int price { get; set; }
         public String type { get; set; }
         public String description { get; set; }
+        public String customer { get; set; }
+        public String packageState { get; set; }
+        public String containerArrivalDate { get; set; }
+        public String container { get; set; }
+        public String arrivalDate { get; set; }
+
         
     }
 }

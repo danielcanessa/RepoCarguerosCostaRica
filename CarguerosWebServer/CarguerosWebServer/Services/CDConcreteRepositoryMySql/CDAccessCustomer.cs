@@ -14,11 +14,21 @@ namespace CarguerosWebServer.Services
         CDMySQLConnection mySQLConnection = CDMySQLConnection.Instance;
 
         public CDAccessCustomer()
-        {          
+        {
+        }
+
+        public static void ClearCacheItems()
+        {
+            var enumerator = HttpContext.Current.Cache.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                HttpContext.Current.Cache.Remove(enumerator.Key.ToString());
+            }
         }
 
         public override Customer[] showAllCustomer()
         {
+            ClearCacheItems();
             DataSet dataSet = mySQLConnection.makeQuery("SELECT * FROM billing.customer;");
             List<Customer> listCustomer = getTableCustomer(dataSet);
             var ctx = HttpContext.Current;
@@ -32,11 +42,12 @@ namespace CarguerosWebServer.Services
             return GetCustomer();
         }
 
-        
+
 
         public override Customer[] loginCustomer(String password, int account)
         {
-            DataSet dataSet = mySQLConnection.makeQuery("CALL `Login_Customer`('"+password+"',"+account+")");
+            ClearCacheItems();
+            DataSet dataSet = mySQLConnection.makeQuery("CALL `Login_Customer`('" + password + "'," + account + ")");
             List<Customer> listCustomer = getTableCustomer(dataSet);
             var ctx = HttpContext.Current;
             if (ctx != null)
@@ -52,26 +63,63 @@ namespace CarguerosWebServer.Services
 
         public List<Customer> getTableCustomer(DataSet dataSet)
         {
+            int account = 0;
+            String name = "";
+            String lastName = "";
+            String telephone = "";
+            String type = "";
+            int score = 0;
+
             List<Customer> listCustomer = new List<Customer>();
             foreach (DataTable table in dataSet.Tables)
             {
                 foreach (DataRow row in table.Rows)
                 {
-                    int account = Convert.ToInt32(row[0]);
-                    String name = row[1].ToString();
-                    String lastName = row[2].ToString();
-                    String telephone = row[3].ToString();
-                    String type = row[4].ToString();
-                    int score = Convert.ToInt32(row[5]);
+                    try
+                    {
+                        account = Convert.ToInt32(row[0]);
+                    }
+                    catch (Exception) { }
+
+                    try
+                    {
+                        name = row[1].ToString();
+                    }
+                    catch (Exception) { }
+
+                    try
+                    {
+                        lastName = row[2].ToString();
+                    }
+                    catch (Exception) { }
+
+                    try
+                    {
+                        telephone = row[3].ToString();
+                    }
+                    catch (Exception) { }
+
+                    try
+                    {
+                        type = row[4].ToString();
+                    }
+                    catch (Exception) { }
+
+                    try
+                    {
+                        score = Convert.ToInt32(row[5]);
+                    }
+                    catch (Exception) { }
+
                     listCustomer.Add(new Customer
                     {
-                        account = account,                      
+                        account = account,
                         score = score,
                         type = type,
                         name = name,
                         telephone = telephone,
                         lastName = lastName
-                    
+
                     }
                     );
                 }
@@ -97,11 +145,10 @@ namespace CarguerosWebServer.Services
                 name = "",
                 telephone = "",
                 lastName = ""
-
                        
             }
         };
-        }       
+        }
 
     }
 }

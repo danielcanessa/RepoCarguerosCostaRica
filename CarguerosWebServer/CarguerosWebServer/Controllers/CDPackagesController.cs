@@ -33,7 +33,16 @@ namespace CarguerosWebServer.Controllers
         [ActionName("2")]
         public Packages[] allPackagesPerUser(int account)
         {
-            return packagesRepository.packagesPerUser(account);
+            System.Diagnostics.Debug.WriteLine("Entre a 2");
+            return packagesRepository.packagesUser(account);
+        }
+
+        [HttpGet]
+        [ActionName("3")]
+        public Packages[] packagesDetailsPerUser(int account)
+        {
+            System.Diagnostics.Debug.WriteLine("Entre a 3");
+            return packagesRepository.detailsPackages();
         }   
     }
 }
