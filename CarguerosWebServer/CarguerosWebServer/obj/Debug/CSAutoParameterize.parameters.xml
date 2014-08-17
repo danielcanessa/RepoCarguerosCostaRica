@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <parameters>
   <parameter name="DefaultConnection-Web.config Connection String" description="DefaultConnection Cadena de conexión que usa la aplicación en web.config para obtener acceso a la base de datos." defaultValue="Data Source=(LocalDb)\v11.0;Initial Catalog=aspnet-CarguerosWebServer-20140802105254;Integrated Security=SSPI;AttachDBFilename=|DataDirectory|\aspnet-CarguerosWebServer-20140802105254.mdf" tags="SqlConnectionString">
-    <parameterEntry kind="XmlFile" scope="C:\\Users\\Edward\\Documents\\GitHub\\carguerosCR\\WebServer\\CarguerosWebServer\\CarguerosWebServer\\obj\\Debug\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='DefaultConnection']/@connectionString" />
+    <parameterEntry kind="XmlFile" scope="C:\\Users\\Edward\\Documents\\GitHub\\RepoCarguerosCostaRica\\CarguerosWebServer\\CarguerosWebServer\\obj\\Debug\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='DefaultConnection']/@connectionString" />
   </parameter>
 </parameters>

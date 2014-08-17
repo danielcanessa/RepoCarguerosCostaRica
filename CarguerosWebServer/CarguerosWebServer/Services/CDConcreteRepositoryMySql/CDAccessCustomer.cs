@@ -26,90 +26,45 @@ namespace CarguerosWebServer.Services
             }
         }
 
-        public override Customer[] showAllCustomer()
-        {
-            ClearCacheItems();
-            DataSet dataSet = mySQLConnection.makeQuery("SELECT * FROM billing.customer;");
-            List<Customer> listCustomer = getTableCustomer(dataSet);
-            var ctx = HttpContext.Current;
-            if (ctx != null)
-            {
-                if (ctx.Cache[CacheKey] == null)
-                {
-                    ctx.Cache[CacheKey] = listCustomer.ToArray();
-                }
-            }
-            return GetCustomer();
-        }
-
-
-
+        
         public override Customer[] loginCustomer(String password, int account)
         {
-            ClearCacheItems();
+            HttpContext.Current.Cache.Remove(CacheKey);
             DataSet dataSet = mySQLConnection.makeQuery("CALL `Login_Customer`('" + password + "'," + account + ")");
-            List<Customer> listCustomer = getTableCustomer(dataSet);
+            List<Customer> ListCustomer = createCustomer(dataSet);
             var ctx = HttpContext.Current;
             if (ctx != null)
             {
                 if (ctx.Cache[CacheKey] == null)
                 {
-                    ctx.Cache[CacheKey] = listCustomer.ToArray();
+                    ctx.Cache[CacheKey] = ListCustomer.ToArray();
                 }
             }
             return GetCustomer();
         }
 
 
-        public List<Customer> getTableCustomer(DataSet dataSet)
+        public List<Customer> createCustomer(DataSet dataSet)
         {
-            int account = 0;
+            List<Customer> listCustomer = new List<Customer>();
+           
+            int account = -1;
             String name = "";
             String lastName = "";
             String telephone = "";
             String type = "";
-            int score = 0;
-
-            List<Customer> listCustomer = new List<Customer>();
-            foreach (DataTable table in dataSet.Tables)
+            int score = -1;
+        
+            foreach (DataTable dataTable in dataSet.Tables)
             {
-                foreach (DataRow row in table.Rows)
+                foreach (DataRow row in dataTable.Rows)
                 {
-                    try
-                    {
-                        account = Convert.ToInt32(row[0]);
-                    }
-                    catch (Exception) { }
-
-                    try
-                    {
-                        name = row[1].ToString();
-                    }
-                    catch (Exception) { }
-
-                    try
-                    {
-                        lastName = row[2].ToString();
-                    }
-                    catch (Exception) { }
-
-                    try
-                    {
-                        telephone = row[3].ToString();
-                    }
-                    catch (Exception) { }
-
-                    try
-                    {
-                        type = row[4].ToString();
-                    }
-                    catch (Exception) { }
-
-                    try
-                    {
-                        score = Convert.ToInt32(row[5]);
-                    }
-                    catch (Exception) { }
+                    if (dataTable.Columns.Contains("account"))       { account = Convert.ToInt32(row["account"]); }
+                    if (dataTable.Columns.Contains("name"))          { name = Convert.ToString(row["name"]); }
+                    if (dataTable.Columns.Contains("last_name"))     { lastName = Convert.ToString(row["last_name"]); }
+                    if (dataTable.Columns.Contains("telephone"))     { telephone = Convert.ToString(row["telephone"]); }
+                    if (dataTable.Columns.Contains("type"))          { type = Convert.ToString(row["type"]); }
+                    if (dataTable.Columns.Contains("score"))         { score = Convert.ToInt32(row["score"]); }
 
                     listCustomer.Add(new Customer
                     {
@@ -120,8 +75,7 @@ namespace CarguerosWebServer.Services
                         telephone = telephone,
                         lastName = lastName
 
-                    }
-                    );
+                    });
                 }
             }
             return listCustomer;
@@ -135,20 +89,9 @@ namespace CarguerosWebServer.Services
             {
                 return (Customer[])ctx.Cache[CacheKey];
             }
-            return new Customer[]
-        {
-            new Customer
-            {
-                account = 0,   
-                score = 0,
-                type = "",
-                name = "",
-                telephone = "",
-                lastName = ""
-                       
-            }
-        };
+            return null;
         }
+
 
     }
 }

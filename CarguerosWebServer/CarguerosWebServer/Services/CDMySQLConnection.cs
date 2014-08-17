@@ -25,7 +25,7 @@ namespace CarguerosWebServer.Services
                 }
                 if (connectionMySQL == null)
                 {
-                    connectionMySQL = new MySqlConnection("server=cargodispatcherdb.csmwl817fkzh.us-west-1.rds.amazonaws.com; user id=dcanessa; password=GUMS2011; database=CargoDispatcher; pooling=false;");
+                    connectionMySQL = new MySqlConnection("server=cargodispatcherdb.csmwl817fkzh.us-west-1.rds.amazonaws.com; user id=dcanessa; password=GUMS2011; database=CargoDispatcher; pooling=TRUE;");
                 //    connectionMySQL = new MySqlConnection("server=localhost; user id=root; password=dcanessa; database=billing; pooling=false;");
                
                 }
@@ -35,9 +35,11 @@ namespace CarguerosWebServer.Services
 
         public DataSet makeQuery(String procedure)
         {
+   
             MySqlDataAdapter adapterSQL = new MySqlDataAdapter(procedure, connectionMySQL);
             DataSet dataSetResult = new DataSet();
             adapterSQL.Fill(dataSetResult);
+       
             return dataSetResult;
         }
 

@@ -11,8 +11,7 @@ namespace CarguerosWebServer.Services
     public abstract class CDCustomerRepository
     {
 
-        public abstract Customer[] showAllCustomer();
-        public abstract Customer[]  loginCustomer(String password, int account);
+        public abstract Customer[] loginCustomer(String password, int account);
 
     }
 

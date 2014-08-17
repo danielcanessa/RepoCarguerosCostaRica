@@ -13,24 +13,16 @@ namespace CarguerosWebServer.Controllers
     {
         private CDCustomerRepository customerRepository;
 
+
          public CDCustomerController()
         {
-            
             CDConcreteFactoryWebServer factory = CDConcreteFactoryWebServer.Instance;
             this.customerRepository = factory.CreateCDCustomerRepository();
-           
-           
         }
        
+        
         [HttpGet]
-        [ActionName("1")]
-         public Customer[] allCustomer()
-        {    
-            return customerRepository.showAllCustomer();            
-        }
-
-        [HttpGet]
-        [ActionName("2")]
+        [ActionName("login")]
         public Customer[] loginCustomer(String password, int account)
         {
             return customerRepository.loginCustomer(password,account);
