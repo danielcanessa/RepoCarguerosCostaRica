@@ -27,6 +27,14 @@ namespace CarguerosWebServer.Controllers
         {
             return customerRepository.loginCustomer(password,account);
         }
+
+        [HttpPost]
+        [ActionName("SingUp")]
+        public void createCustomer(String name ,String last_name,String telephone ,String password ,String route)
+        {
+            customerRepository.createCustomer(name , last_name, telephone , password , route);
+           
+        }
          
     }
 }

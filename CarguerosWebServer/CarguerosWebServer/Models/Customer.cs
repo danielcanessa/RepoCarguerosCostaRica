@@ -21,6 +21,11 @@ namespace CarguerosWebServer.Models
 
         public String telephone { get; set; }
 
+        public String password { get; set; }
+
+        public String route { get; set; }
+
+        
 
     }
 

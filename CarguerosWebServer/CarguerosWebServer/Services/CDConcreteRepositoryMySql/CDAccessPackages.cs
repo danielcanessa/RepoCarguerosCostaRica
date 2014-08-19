@@ -19,19 +19,10 @@ namespace CarguerosWebServer.Services
 
         }
 
-        public static void ClearCacheItems()
+        public override Packages[] detailsPackages(int account)
         {
-            var enumerator = HttpContext.Current.Cache.GetEnumerator();
-            while (enumerator.MoveNext())
-            {
-                HttpContext.Current.Cache.Remove(enumerator.Key.ToString());
-            }
-        }
-
-        public override Packages[] detailsPackages()
-        {
-            ClearCacheItems();
-            DataSet dataSet = mySQLConnection.makeQuery("CALL `Details_Packages`(" + "1" + ");");
+            HttpContext.Current.Cache.Remove(CacheKey);
+            DataSet dataSet = mySQLConnection.makeQuery("CALL `Details_Packages`(" + account + ");");
             List<Packages> listPackages = getTabledetailsPakages(dataSet);
             var ctx = HttpContext.Current;
             if (ctx != null)
@@ -44,83 +35,66 @@ namespace CarguerosWebServer.Services
             return GetPackages();
         }
 
+
         public List<Packages> getTabledetailsPakages(DataSet dataSet)
         {
-            int idPackages = 0; int price = 0;
-            String costumer = "-"; String packageState = "-"; String containerArrivalDate = "-"; String container = "-"; String arrivalDate = "-";
+            int idPackages = -1;
+            int price = -1;
+            String costumer = "-";
+            String packageState = "-";
+            String containerArrivalDate = "-";
+            String container = "-";
+            String arrivalDate = "-";
             List<Packages> listPackages = new List<Packages>();
-            foreach (DataTable table in dataSet.Tables)
+            foreach (DataTable dataTable in dataSet.Tables)
             {
-                foreach (DataRow row in table.Rows)
+                foreach (DataRow row in dataTable.Rows)
                 {
-
-                    try
-                    {
-                        idPackages = Convert.ToInt32(row[0]);
-                    }
-                    catch (Exception) { }
-
-                    try
-                    {
-                        costumer = row[1].ToString();
-                    }
-                    catch (Exception) { }
-
-                    try
-                    {
-                        packageState = row[2].ToString();
-                    }
-                    catch (Exception) { }
-
-                    try
-                    {
-                        price = Convert.ToInt32(row[3]);
-                    }
-                    catch (Exception) { }
-
-                    try
-                    {
-                        containerArrivalDate = row[4].ToString();
-                    }
-                    catch (Exception) { }
-
-                    try
-                    {
-                        container = row[5].ToString();
-                    }
-                    catch (Exception) { }
-
-                    try
-                    {
-                        arrivalDate = row[6].ToString();
-                    }
-                    catch (Exception) { }
-
+                    if (dataTable.Columns.Contains("idPackages") && row["idPackages"] != DBNull.Value) { idPackages = Convert.ToInt32(row["idPackages"]); }
+                    if (dataTable.Columns.Contains("costumer") && row["costumer"] != DBNull.Value) { costumer = row["costumer"].ToString(); }
+                    if (dataTable.Columns.Contains("packageState") && row["packageState"] != DBNull.Value) { packageState = row["packageState"].ToString(); }
+                    if (dataTable.Columns.Contains("price") && row["price"] != DBNull.Value) { price = Convert.ToInt32(row["price"]); }
+                    if (dataTable.Columns.Contains("containerArrivalDate") && row["containerArrivalDate"] != DBNull.Value) { containerArrivalDate = row["containerArrivalDate"].ToString(); }
+                    if (dataTable.Columns.Contains("container") && row["container"] != DBNull.Value) { container = row["container"].ToString(); }
+                    if (dataTable.Columns.Contains("arrivalDate") && row["arrivalDate"] != DBNull.Value) { arrivalDate = row["arrivalDate"].ToString(); }
                     listPackages.Add(new Packages
                     {
                         idPackages = idPackages,
-                        weight = 0,
-                        size = 0,
-                        price = price,
-                        type = "-",
                         customer = costumer,
                         packageState = packageState,
                         containerArrivalDate = containerArrivalDate,
                         container = container,
                         arrivalDate = arrivalDate,
+                        weight = -1,
+                        size = -1,
+                        price = price,
+                        type = "-",
                         description = "-"
 
-                    }
+                    }  
                     );
+                    rebootVargetTabledetailsPakages(ref idPackages, ref price, ref costumer, ref packageState, ref containerArrivalDate, ref container, ref arrivalDate);
                 }
             }
             return listPackages;
         }
 
+        public void rebootVargetTabledetailsPakages(ref int idPackages, ref int price, ref  String costumer, ref  String packageState, 
+            ref  String containerArrivalDate, ref  String container, ref  String arrivalDate)
+        {
+            idPackages = -1;
+            price = -1;
+            costumer = "-";
+            packageState = "-";
+            containerArrivalDate = "-";
+            container = "-";
+            arrivalDate = "-";
+        }     
+
 
         public override Packages[] packagesUser(int account)
         {
-            ClearCacheItems();
+            HttpContext.Current.Cache.Remove(CacheKey);
             DataSet dataSet = mySQLConnection.makeQuery("CALL  `User_packages`(" + account + ");");
             List<Packages> listPackages = getTablePackagesPerUser(dataSet);
             var ctx = HttpContext.Current;
@@ -134,159 +108,58 @@ namespace CarguerosWebServer.Services
             return GetPackages();
         }
 
+      
+
         public List<Packages> getTablePackagesPerUser(DataSet dataSet)
         {
-            int idPackages = 0;
-            String description = "";
+            int idPackages=-1;
+            String description="-";
+
             List<Packages> listPackages = new List<Packages>();
-            foreach (DataTable table in dataSet.Tables)
+            foreach (DataTable dataTable in dataSet.Tables)
             {
-                foreach (DataRow row in table.Rows)
+                foreach (DataRow row in dataTable.Rows)
                 {
-                    try
-                    {
-                        idPackages = Convert.ToInt32(row[0]);
-                    }
-                    catch (Exception) { }
-                    try
-                    {
-                        description = row[1].ToString();
-                    }
-                    catch (Exception) { }
+                    if (dataTable.Columns.Contains("idPackages") && row["idPackages"] != DBNull.Value) { idPackages = Convert.ToInt32(row["idPackages"]); }
+                    if (dataTable.Columns.Contains("description") && row["description"] != DBNull.Value) { description = row["description"].ToString(); }
                     listPackages.Add(new Packages
                     {
                         idPackages = idPackages,
-                        weight = 0,
-                        size = 0,
-                        price = 0,
+                        description = description,
+                        weight = -1,
+                        size = -1,
+                        price = -1,
                         type = "-",
                         customer = "-",
                         packageState = "-",
                         containerArrivalDate = "-",
                         container = "-",
-                        arrivalDate = "-",
-                        description = description
-                    }
-                    );
-                }
-            }
-            return listPackages;
-        }
-
-        public override Packages[] showAllPackages()
-        {
-            ClearCacheItems();
-            DataSet dataSet = mySQLConnection.makeQuery("SELECT * FROM universidad.estudiante;");
-            List<Packages> listPackages = getTablePackages(dataSet);
-            var ctx = HttpContext.Current;
-            if (ctx != null)
-            {
-                if (ctx.Cache[CacheKey] == null)
-                {
-                    ctx.Cache[CacheKey] = listPackages.ToArray();
-                }
-            }
-            return GetPackages();
-        }
-
-        public List<Packages> getTablePackages(DataSet dataSet)
-        {
-            int idPackages = 0;
-            int weight = 0;
-            int size = 0;
-            int price = 0;
-            String type = "";
-            String description = "";
-
-            List<Packages> listPackages = new List<Packages>();
-            foreach (DataTable table in dataSet.Tables)
-            {
-                foreach (DataRow row in table.Rows)
-                {
-                    try
-                    {
-                        idPackages = Convert.ToInt32(row[0]);
-                    }
-                    catch (Exception) { }
-
-                    try
-                    {
-                        weight = Convert.ToInt32(row[1]);
-                    }
-                    catch (Exception) { }
-
-                    try
-                    {
-                        size = Convert.ToInt32(row[2]);
-                    }
-                    catch (Exception) { }
-
-                    try
-                    {
-                        price = Convert.ToInt32(row[3]);
-                    }
-                    catch (Exception) { }
-
-                    try
-                    {
-                        type = row[4].ToString();
-                    }
-                    catch (Exception) { }
-
-                    try
-                    {
-                        description = row[5].ToString();
-                    }
-                    catch (Exception) { }
-
-                    listPackages.Add(new Packages
-                    {
-                        idPackages = idPackages,
-                        weight = weight,
-                        size = size,
-                        price = price,
-                        type = type,
-                        description = description,
-                        customer = "-",
-                        packageState = "-",
-                        containerArrivalDate = "-",
-                        container = "-",
                         arrivalDate = "-"
-
                     }
                     );
+
+                    rebootVargetTablePackagesPerUser(ref  idPackages, ref description); 
                 }
             }
             return listPackages;
+        }
+
+        public void rebootVargetTablePackagesPerUser(ref int idPackages, ref  String description)
+        {
+            idPackages = -1;
+            description = "-";
         }
 
         public Packages[] GetPackages()
         {
-
             var ctx = HttpContext.Current;
 
             if (ctx != null)
             {
                 return (Packages[])ctx.Cache[CacheKey];
             }
-            return new Packages[]
-        {
-            new Packages
-            {
-                idPackages = 0,
-                weight = 0,
-                size = 0,
-                price = 0,
-                type = "-",
-                description = "-",
-                customer = "-",
-                packageState = "-",
-                containerArrivalDate = "-",
-                container = "-",
-                arrivalDate = "-"
-            }
-        };
-        }
+            return null;
+        }       
 
     }
 }

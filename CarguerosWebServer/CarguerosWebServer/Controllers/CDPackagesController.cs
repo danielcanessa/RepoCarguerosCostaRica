@@ -23,26 +23,17 @@ namespace CarguerosWebServer.Controllers
         }
        
         [HttpGet]
-        [ActionName("1")]
-        public Packages[] allPackagesAllUsers()
-        {    
-            return packagesRepository.showAllPackages();            
-        }
-
-        [HttpGet]
-        [ActionName("2")]
+        [ActionName("UserPackages")]
         public Packages[] allPackagesPerUser(int account)
-        {
-            System.Diagnostics.Debug.WriteLine("Entre a 2");
+        {            
             return packagesRepository.packagesUser(account);
         }
 
         [HttpGet]
-        [ActionName("3")]
+        [ActionName("PackagesDetails")]
         public Packages[] packagesDetailsPerUser(int account)
         {
-            System.Diagnostics.Debug.WriteLine("Entre a 3");
-            return packagesRepository.detailsPackages();
+            return packagesRepository.detailsPackages(account);
         }   
     }
 }

@@ -13,6 +13,8 @@ namespace CarguerosWebServer.Services
 
         public abstract Customer[] loginCustomer(String password, int account);
 
+        public abstract void createCustomer(String name, String last_name, String telephone, String password, String route);
+
     }
 
 }
