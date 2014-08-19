@@ -23,10 +23,12 @@ namespace CarguerosWebServer.Controllers
         }
        
         [HttpGet]
-        [ActionName("1")]
-        public CustomerHasPackages[] allCustomerHasPackages()
+        [ActionName("packageArrive")]
+        public CustomerHasPackages[] packageArrive(int account, int idPackage)
         {
-            return CustomerHasPackagesRepository.showAllCustomerHasPackages();            
+            return CustomerHasPackagesRepository.packageArrive(account, idPackage);           
         }     
+
+       
     }
 }

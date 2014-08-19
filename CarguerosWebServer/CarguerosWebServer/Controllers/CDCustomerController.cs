@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Web.Http;
 using CarguerosWebServer.Services;
 using CarguerosWebServer.Models;
+using System.Web;
 
 namespace CarguerosWebServer.Controllers
 {
@@ -30,9 +31,16 @@ namespace CarguerosWebServer.Controllers
 
         [HttpPost]
         [ActionName("SingUp")]
-        public void createCustomer(String name ,String last_name,String telephone ,String password ,String route)
+        public String createCustomer(String name, String last_name, String telephone, String password, String route)
         {
-            customerRepository.createCustomer(name , last_name, telephone , password , route);
+            if (customerRepository.createCustomer(name, last_name, telephone, password, route) == 200)
+            {
+                return "Sucess";
+            }
+            else
+            {
+                return "fail";
+            }         
            
         }
          

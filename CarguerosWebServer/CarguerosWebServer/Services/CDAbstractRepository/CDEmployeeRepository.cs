@@ -10,5 +10,6 @@ namespace CarguerosWebServer.Services
     {
         public abstract Employee[] showAllEmployee();
 
+        public abstract int createEmployee(String name, String last_name, String telephone, String password, String role);
     }
 }

@@ -27,7 +27,22 @@ namespace CarguerosWebServer.Controllers
         public Employee[] allEmployee()
         {    
             return employeeRepository.showAllEmployee();            
-        }      
+        }
+
+        [HttpPost]
+        [ActionName("SingUp")]
+        public String createEmployee(String name, String last_name, String telephone, String password, String role)
+        {
+            if (employeeRepository.createEmployee(name,last_name,telephone,password,role) == 200)
+            {
+                return "Sucess";
+            }
+            else
+            {
+                return "fail";
+            }
+
+        }
 
 
     }

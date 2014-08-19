@@ -18,6 +18,16 @@ namespace CarguerosWebServer.Services
         {    
       
         }
+        
+
+        public override int createEmployee(String name, String last_name, String telephone, String password, String role)
+        {
+            //Falta incluir role                      
+            mySQLConnection.makeQuery("CALL `Register_Employee`('" +name+ "' ,'" +last_name+ "' ,'" +telephone+ "' ,'" +password+ "')");         
+            return HttpContext.Current.Response.StatusCode;
+
+        }
+
 
         public override Employee[] showAllEmployee()
         {
@@ -54,6 +64,8 @@ namespace CarguerosWebServer.Services
             return listEmployee;
         }
 
+
+
         public Employee[] GetEmployee()
         {
             var ctx = HttpContext.Current;
@@ -62,14 +74,7 @@ namespace CarguerosWebServer.Services
             {
                 return (Employee[])ctx.Cache[CacheKey];
             }
-            return new Employee[]
-        {
-            new Employee
-            {
-                 personIdPerson = 0     
-            }
-        };
-        }       
-        
+            return null;
+        }
     }
 }

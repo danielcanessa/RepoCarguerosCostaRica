@@ -15,52 +15,56 @@ namespace CarguerosWebServer.Services
         CDMySQLConnection mySQLConnection = CDMySQLConnection.Instance;
 
         public CDAcessCustomerHasPackages()
-        {    
-      
+        {
+
         }
 
-        public override CustomerHasPackages[] showAllCustomerHasPackages()
+        public override CustomerHasPackages[] packageArrive(int account, int idPackage)
         {
-            DataSet dataSet = mySQLConnection.makeQuery("SELECT * FROM universidad.estudiante;"); 
-            List<CustomerHasPackages> listCustomerHasPackages = getTableCustomerHasPackages(dataSet);    
-            var ctx = HttpContext.Current;            
+            HttpContext.Current.Cache.Remove(CacheKey);
+            DataSet dataSet = mySQLConnection.makeQuery("CALL `Package_arrived`(" + account + "," + idPackage + ");");
+            List<CustomerHasPackages> ListPackageArrive = getpackageArrive(dataSet, account, idPackage);
+
+            var ctx = HttpContext.Current;
             if (ctx != null)
             {
                 if (ctx.Cache[CacheKey] == null)
                 {
-                    ctx.Cache[CacheKey] = listCustomerHasPackages.ToArray();                     
+                    ctx.Cache[CacheKey] = ListPackageArrive.ToArray();
                 }
             }
             return GetCustomerHasPackages();
         }
 
-
-
-        public  List<CustomerHasPackages> getTableCustomerHasPackages(DataSet dataSet)
+        public List<CustomerHasPackages> getpackageArrive(DataSet dataSet, int customerAccount, int packagesIdPackages)
         {
             List<CustomerHasPackages> listCustomerHasPackages = new List<CustomerHasPackages>();
-            foreach (DataTable table in dataSet.Tables)
+
+            String packageState = "-";
+            int billingIdBilling = -1;
+
+            DataTable dataTable = dataSet.Tables[0];
+            if (dataTable.Rows.Count > 0)
             {
-                foreach (DataRow row in table.Rows)
-                {         
+                DataRow row = dataTable.Rows[0];
 
-                    int customerAccount = Convert.ToInt32(row[0]);
-                    int packagesIdPackages = Convert.ToInt32(row[1]);
-                    String packageState = row[2].ToString();
-                    int billingIdBilling = Convert.ToInt32(row[3]);
-
-                    listCustomerHasPackages.Add(new CustomerHasPackages
-                    {
-                        customerAccount = customerAccount,
-                        packagesIdPackages = packagesIdPackages,
-                        packageState = packageState,
-                        billingIdBilling = billingIdBilling                        
-                    }
-                    );
+                if (dataTable.Columns.Contains("package_available") && row["package_available"] != DBNull.Value)
+                {
+                    if (Convert.ToInt32(row["package_available"]) == 1) { packageState = "delivered"; }
+                    else { packageState = "no_delivered"; }
                 }
+                listCustomerHasPackages.Add(new CustomerHasPackages
+                {
+                    customerAccount = customerAccount,
+                    packagesIdPackages = packagesIdPackages,
+                    packageState = packageState,
+                    billingIdBilling = billingIdBilling,
+                }
+                );
             }
             return listCustomerHasPackages;
         }
+              
 
         public CustomerHasPackages[] GetCustomerHasPackages()
         {
@@ -70,17 +74,8 @@ namespace CarguerosWebServer.Services
             {
                 return (CustomerHasPackages[])ctx.Cache[CacheKey];
             }
-            return new CustomerHasPackages[]
-        {
-            new CustomerHasPackages
-            {
-               customerAccount = 0,
-               packagesIdPackages = 0,
-               packageState = "",
-               billingIdBilling = 0  
-            }
-        };
-        }       
+            return null;
+        }
 
     }
 }

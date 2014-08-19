@@ -8,6 +8,7 @@ namespace CarguerosWebServer.Services
 {
     public abstract class CDCustomerHasPackagesRepository
     {
-        public abstract CustomerHasPackages[] showAllCustomerHasPackages();
+        
+        public abstract CustomerHasPackages[] packageArrive(int account, int idPackage);
     }
 }
