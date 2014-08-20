@@ -40,15 +40,9 @@ namespace CarguerosWebServer.Controllers
         [ActionName("createPackage")]
         public String createPackage(int weight, int size, String type, int price, String description, int account)
         {
-            if (packagesRepository.createPackage( weight,  size,  type,  price,  description,  account) == 200)
-            {
-                return "Sucess";
-            }
-            else
-            {
-                return "fail";
-            }
-            
+            int id = packagesRepository.createPackage(weight, size, type, price, description, account);
+            return Convert.ToString(id);
         }
+           
     }
 }

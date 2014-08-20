@@ -22,9 +22,12 @@ namespace CarguerosWebServer.Services
 
         public override int createEmployee(String name, String last_name, String telephone, String password, int role)
         {
-                             
-            mySQLConnection.makeQuery("CALL `Register_Employee`('" +name+ "' ,'" +last_name+ "' ,'" +telephone+ "' ,'" +password+"',"+role+")");         
-            return HttpContext.Current.Response.StatusCode;
+
+            long idEmployee=mySQLConnection.makePostQuery("Insert INTO  Person SET name = '" + name + "',last_name = '" + last_name + "', telephone = '" + telephone + "',password = '" + password + "'; ");
+            int idEmployeeAux = Convert.ToInt32(idEmployee);
+            mySQLConnection.makeQuery("CALL `Register_Employee`(" + idEmployeeAux + ", " + role + ");");
+
+            return idEmployeeAux;
 
         }
 

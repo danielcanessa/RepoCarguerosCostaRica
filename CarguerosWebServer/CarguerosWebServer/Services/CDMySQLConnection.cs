@@ -37,10 +37,34 @@ namespace CarguerosWebServer.Services
         {
    
             MySqlDataAdapter adapterSQL = new MySqlDataAdapter(procedure, connectionMySQL);
+            
             DataSet dataSetResult = new DataSet();
             adapterSQL.Fill(dataSetResult);
        
             return dataSetResult;
+        }
+
+        public long makePostQuery(String procedure)
+        {
+            
+            MySqlCommand cmd = new MySqlCommand();
+
+            cmd.Connection = connectionMySQL;
+            cmd.Connection.Open();
+
+            string commandLine = procedure;
+            cmd.CommandText = commandLine;
+
+          
+
+            cmd.ExecuteNonQuery();
+   
+                 
+
+            cmd.Connection.Close();
+            
+            return cmd.LastInsertedId;
+           
         }
 
     }

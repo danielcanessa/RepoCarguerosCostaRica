@@ -31,17 +31,10 @@ namespace CarguerosWebServer.Controllers
 
         [HttpPost]
         [ActionName("SingUp")]
-        public String createCustomer(String name, String last_name, String telephone, String password, String route)
+        public String createCustomer(String name, String last_name, String telephone, String password, int route)
         {
-            if (customerRepository.createCustomer(name, last_name, telephone, password, route) == 200)
-            {
-                return "Sucess";
-            }
-            else
-            {
-                return "fail";
-            }         
-           
+            int id= customerRepository.createCustomer(name, last_name, telephone, password, route);
+            return Convert.ToString(id);
         }
          
     }

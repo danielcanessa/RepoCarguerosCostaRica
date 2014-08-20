@@ -22,11 +22,11 @@ namespace CarguerosWebServer.Controllers
 
         [HttpGet]
         [ActionName("containerArrive")]
-        public Container[] containerArrive(int idEmployee,int password)
+        public Container[] containerArrive(int idContainer, int route)
         {
-            return containerRepository.containerArrive(idEmployee,password);
+            return containerRepository.containerArrive(idContainer, route);
         }
-
-
+        
+        
     }
 }

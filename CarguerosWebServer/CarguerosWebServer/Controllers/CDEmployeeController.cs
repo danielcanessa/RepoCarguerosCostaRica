@@ -33,14 +33,10 @@ namespace CarguerosWebServer.Controllers
         [ActionName("SingUp")]
         public String createEmployee(String name, String last_name, String telephone, String password, int role)
         {
-            if (employeeRepository.createEmployee(name,last_name,telephone,password,role) == 200)
-            {
-                return "Sucess";
-            }
-            else
-            {
-                return "fail";
-            }
+            int id= employeeRepository.createEmployee(name, last_name, telephone, password, role);
+         
+            return Convert.ToString(id);
+            
 
         }
 

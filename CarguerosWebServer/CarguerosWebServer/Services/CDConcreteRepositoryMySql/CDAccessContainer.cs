@@ -19,10 +19,11 @@ namespace CarguerosWebServer.Services
         }
 
 
-        public override Container[] containerArrive(int idEmployee, int password)
+        public override Container[] containerArrive(int idContainer, int route)
         {
-            DataSet dataSet = mySQLConnection.makeQuery("CALL `Login_Employee`(" + password + " ," + idEmployee + ");");
-            List<Container> listContainer = getTableContainerArrive(dataSet);
+            HttpContext.Current.Cache.Remove(CacheKey);
+            DataSet dataSet = mySQLConnection.makeQuery("CALL `Container_arrived`(" + idContainer + " , "+route+");");
+            List<Container> listContainer = getTableContainerArrive(dataSet,idContainer,route);
             var ctx = HttpContext.Current;
             if (ctx != null)
             {
@@ -34,10 +35,8 @@ namespace CarguerosWebServer.Services
             return GetContainer();
         }
 
-        public List<Container> getTableContainerArrive(DataSet dataSet)
+        public List<Container> getTableContainerArrive(DataSet dataSet, int idContainer, int route)
         {
-            int idContainer = -1;
-            int route = -1;
             int containerArrive = -1;
             int maxWeight = -1;
             List<Container> listContainer = new List<Container>();
@@ -46,9 +45,8 @@ namespace CarguerosWebServer.Services
             {
                 foreach (DataRow row in dataTable.Rows)
                 {
-                    if (dataTable.Columns.Contains("idContainer") && row["idContainer"] != DBNull.Value) { idContainer = Convert.ToInt32(row["idContainer"]); }
-                    if (dataTable.Columns.Contains("route") && row["route"] != DBNull.Value) { route = Convert.ToInt32(row["route"]); }
-                    if (dataTable.Columns.Contains("containerArrive") && row["containerArrive"] != DBNull.Value) { containerArrive = Convert.ToInt32(row["containerArrive"]); }                   
+                    if (dataTable.Columns.Contains("Container_arrived") && row["Container_arrived"] != DBNull.Value) { containerArrive = Convert.ToInt32(row["Container_arrived"]); }
+                             
                    
                     listContainer.Add(new Container
                     {

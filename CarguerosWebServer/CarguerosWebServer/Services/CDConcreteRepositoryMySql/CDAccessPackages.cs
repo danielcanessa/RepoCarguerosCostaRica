@@ -23,9 +23,11 @@ namespace CarguerosWebServer.Services
         {
             String aux_description = changeBacketsForSpace(description);
             String aux_type = changeBacketsForSpace(type);
-            HttpContext.Current.Cache.Remove(CacheKey);
-            mySQLConnection.makeQuery("CALL `Register_Packages`(" + weight + "," + size + ",'" + aux_type + "', " + price + ", '" + aux_description + "'," + account + ");");
-            return HttpContext.Current.Response.StatusCode;
+
+            long idPackage = mySQLConnection.makePostQuery("INSERT INTO Packages SET weight = " + weight + ",size = " + size + " ,type = '" + type + "' ,price = " + price + " , description = '" + description + "';");
+            int idPackageAux = Convert.ToInt32(idPackage);
+            mySQLConnection.makeQuery("CALL `Register_Packages`(" + idPackage + "," + account + "," + price + ");");
+            return idPackageAux;
         }
 
         public String changeBacketsForSpace( String word)
