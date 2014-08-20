@@ -9,6 +9,6 @@ namespace CarguerosWebServer.Services
 {
     public abstract class CDContainerRepository
     {
-        public abstract Container[] showAllContainer();     
+        public abstract Container[] containerArrive(int idEmployee, int password);     
     }
 }

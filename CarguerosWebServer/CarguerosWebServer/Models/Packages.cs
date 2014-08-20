@@ -11,6 +11,7 @@ namespace CarguerosWebServer.Models
         public int weight { get; set; }       
         public int size { get; set; }
         public int price { get; set; }
+        public int account { get; set; }
         public String type { get; set; }
         public String description { get; set; }
         public String customer { get; set; }

@@ -11,5 +11,7 @@ namespace CarguerosWebServer.Services
         public abstract Packages[] packagesUser(int account);
 
         public abstract Packages[] detailsPackages(int account);
+
+        public abstract int createPackage(int weight, int size, String type, int price, String description, int account);
     }
 }

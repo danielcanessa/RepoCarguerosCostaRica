@@ -19,11 +19,26 @@ namespace CarguerosWebServer.Services
 
         }
 
+        public override int createPackage(int weight,int size, String type, int price, String description,int account)
+        {
+            String aux_description = changeBacketsForSpace(description);
+            String aux_type = changeBacketsForSpace(type);
+            HttpContext.Current.Cache.Remove(CacheKey);
+            mySQLConnection.makeQuery("CALL `Register_Packages`(" + weight + "," + size + ",'" + aux_type + "', " + price + ", '" + aux_description + "'," + account + ");");
+            return HttpContext.Current.Response.StatusCode;
+        }
+
+        public String changeBacketsForSpace( String word)
+        {
+            word = word.Replace('_', ' ');
+            return word;
+        }
+
         public override Packages[] detailsPackages(int account)
         {
             HttpContext.Current.Cache.Remove(CacheKey);
             DataSet dataSet = mySQLConnection.makeQuery("CALL `Details_Packages`(" + account + ");");
-            List<Packages> listPackages = getTabledetailsPakages(dataSet);
+            List<Packages> listPackages = getTabledetailsPakages(dataSet, account);
             var ctx = HttpContext.Current;
             if (ctx != null)
             {
@@ -36,7 +51,7 @@ namespace CarguerosWebServer.Services
         }
 
 
-        public List<Packages> getTabledetailsPakages(DataSet dataSet)
+        public List<Packages> getTabledetailsPakages(DataSet dataSet, int account)
         {
             int idPackages = -1;
             int price = -1;
@@ -59,6 +74,7 @@ namespace CarguerosWebServer.Services
                     if (dataTable.Columns.Contains("arrivalDate") && row["arrivalDate"] != DBNull.Value) { arrivalDate = row["arrivalDate"].ToString(); }
                     listPackages.Add(new Packages
                     {
+                        account=account,
                         idPackages = idPackages,
                         customer = costumer,
                         packageState = packageState,
@@ -96,7 +112,7 @@ namespace CarguerosWebServer.Services
         {
             HttpContext.Current.Cache.Remove(CacheKey);
             DataSet dataSet = mySQLConnection.makeQuery("CALL  `User_packages`(" + account + ");");
-            List<Packages> listPackages = getTablePackagesPerUser(dataSet);
+            List<Packages> listPackages = getTablePackagesPerUser(dataSet, account);
             var ctx = HttpContext.Current;
             if (ctx != null)
             {
@@ -108,9 +124,9 @@ namespace CarguerosWebServer.Services
             return GetPackages();
         }
 
-      
 
-        public List<Packages> getTablePackagesPerUser(DataSet dataSet)
+
+        public List<Packages> getTablePackagesPerUser(DataSet dataSet, int account)
         {
             int idPackages=-1;
             String description="-";
@@ -124,6 +140,7 @@ namespace CarguerosWebServer.Services
                     if (dataTable.Columns.Contains("description") && row["description"] != DBNull.Value) { description = row["description"].ToString(); }
                     listPackages.Add(new Packages
                     {
+                        account=account,
                         idPackages = idPackages,
                         description = description,
                         weight = -1,

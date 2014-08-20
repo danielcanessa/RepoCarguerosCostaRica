@@ -34,6 +34,21 @@ namespace CarguerosWebServer.Controllers
         public Packages[] packagesDetailsPerUser(int account)
         {
             return packagesRepository.detailsPackages(account);
-        }   
+        }
+
+        [HttpPost]
+        [ActionName("createPackage")]
+        public String createPackage(int weight, int size, String type, int price, String description, int account)
+        {
+            if (packagesRepository.createPackage( weight,  size,  type,  price,  description,  account) == 200)
+            {
+                return "Sucess";
+            }
+            else
+            {
+                return "fail";
+            }
+            
+        }
     }
 }

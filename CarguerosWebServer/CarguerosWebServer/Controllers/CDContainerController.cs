@@ -21,10 +21,10 @@ namespace CarguerosWebServer.Controllers
         }
 
         [HttpGet]
-        [ActionName("1")]
-        public Container[] allContainer()
+        [ActionName("containerArrive")]
+        public Container[] containerArrive(int idEmployee,int password)
         {
-            return containerRepository.showAllContainer();
+            return containerRepository.containerArrive(idEmployee,password);
         }
 
 

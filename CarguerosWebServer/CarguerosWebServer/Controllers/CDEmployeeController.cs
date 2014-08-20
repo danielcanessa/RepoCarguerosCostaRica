@@ -23,15 +23,15 @@ namespace CarguerosWebServer.Controllers
         }
        
         [HttpGet]
-        [ActionName("1")]
-        public Employee[] allEmployee()
-        {    
-            return employeeRepository.showAllEmployee();            
+        [ActionName("loginEmployee")]
+        public Employee[] allEmployee(String password, int idEmployee)
+        {
+            return employeeRepository.loginEmployee(password, idEmployee);     
         }
-
+        
         [HttpPost]
         [ActionName("SingUp")]
-        public String createEmployee(String name, String last_name, String telephone, String password, String role)
+        public String createEmployee(String name, String last_name, String telephone, String password, int role)
         {
             if (employeeRepository.createEmployee(name,last_name,telephone,password,role) == 200)
             {

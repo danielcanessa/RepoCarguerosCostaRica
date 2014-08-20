@@ -20,19 +20,20 @@ namespace CarguerosWebServer.Services
         }
         
 
-        public override int createEmployee(String name, String last_name, String telephone, String password, String role)
+        public override int createEmployee(String name, String last_name, String telephone, String password, int role)
         {
-            //Falta incluir role                      
-            mySQLConnection.makeQuery("CALL `Register_Employee`('" +name+ "' ,'" +last_name+ "' ,'" +telephone+ "' ,'" +password+ "')");         
+                             
+            mySQLConnection.makeQuery("CALL `Register_Employee`('" +name+ "' ,'" +last_name+ "' ,'" +telephone+ "' ,'" +password+"',"+role+")");         
             return HttpContext.Current.Response.StatusCode;
 
         }
 
 
-        public override Employee[] showAllEmployee()
+        public override Employee[] loginEmployee(String password,int idEmployee)
         {
-            DataSet dataSet = mySQLConnection.makeQuery("SELECT * FROM universidad.estudiante;"); 
-            List<Employee> listEmployee = getTableEmployee(dataSet);    
+            HttpContext.Current.Cache.Remove(CacheKey);
+            DataSet dataSet = mySQLConnection.makeQuery("CALL `Login_Employee`('"+password+"' ,"+idEmployee+");"); 
+            List<Employee> listEmployee = getTableLoginEmployee(dataSet);    
             var ctx = HttpContext.Current;            
             if (ctx != null)
             {
@@ -46,21 +47,38 @@ namespace CarguerosWebServer.Services
 
 
 
-        public  List<Employee> getTableEmployee(DataSet dataSet)
+        public List<Employee> getTableLoginEmployee(DataSet dataSet)
         {
+            int personIdPerson =-1;
+            String name = "-";
+            String last_name = "-";
+            String telephone = "-";
+            String password = "-";
+            String role = "-";
             List<Employee> listEmployee = new List<Employee>();
-            foreach (DataTable table in dataSet.Tables)
+            
+            DataTable dataTable = dataSet.Tables[0];            
+            if (dataTable.Rows.Count > 0)
             {
-                foreach (DataRow row in table.Rows)
+                DataRow row = dataTable.Rows[0];
+                if (dataTable.Columns.Contains("idPerson") && row["idPerson"] != DBNull.Value) {  personIdPerson = Convert.ToInt32(row["idPerson"]); }
+                if (dataTable.Columns.Contains("name") && row["name"] != DBNull.Value) { name = Convert.ToString(row["name"]); }
+                if (dataTable.Columns.Contains("last_name") && row["last_name"] != DBNull.Value) { last_name = Convert.ToString(row["last_name"]); }
+                if (dataTable.Columns.Contains("telephone") && row["telephone"] != DBNull.Value) { telephone = Convert.ToString(row["telephone"]); }
+                if (dataTable.Columns.Contains("role") && row["role"] != DBNull.Value) { role = Convert.ToString(row["role"]); }
+
+                listEmployee.Add(new Employee
                 {
-             
-                    int personIdPerson = Convert.ToInt32(row[0]);                                      
-                    listEmployee.Add(new Employee{
-                        personIdPerson = personIdPerson                      
-                    }
-                    );
+                    personIdPerson = personIdPerson,
+                    name = name,
+                    last_name = last_name,
+                    telephone = telephone,
+                    password = password,
+                    role = role
                 }
+                );
             }
+            
             return listEmployee;
         }
 

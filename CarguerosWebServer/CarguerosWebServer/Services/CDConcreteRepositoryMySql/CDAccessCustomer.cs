@@ -21,8 +21,9 @@ namespace CarguerosWebServer.Services
 
         public override int createCustomer(String name, String last_name, String telephone, String password, String route)
         {
-           mySQLConnection.makeQuery(" CALL `Register_Customer`('"+name+"','"+last_name+"','"+telephone+"','"+password+"','"+route+"');");         
-           return HttpContext.Current.Response.StatusCode;
+            HttpContext.Current.Cache.Remove(CacheKey);
+            mySQLConnection.makeQuery(" CALL `Register_Customer`('"+name+"','"+last_name+"','"+telephone+"','"+password+"','"+route+"');");        
+            return HttpContext.Current.Response.StatusCode;
         }
                 
         public override Customer[] loginCustomer(String password, int account)

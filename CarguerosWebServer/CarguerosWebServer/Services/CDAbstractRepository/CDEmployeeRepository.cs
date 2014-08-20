@@ -8,8 +8,11 @@ namespace CarguerosWebServer.Services
 {
     public abstract class CDEmployeeRepository
     {
-        public abstract Employee[] showAllEmployee();
+   
 
-        public abstract int createEmployee(String name, String last_name, String telephone, String password, String role);
+        public abstract int createEmployee(String name, String last_name, String telephone, String password, int role);
+
+        public abstract Employee[] loginEmployee(String password, int idEmployee);
+
     }
 }
