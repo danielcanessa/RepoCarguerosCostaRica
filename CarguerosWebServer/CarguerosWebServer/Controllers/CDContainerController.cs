@@ -26,6 +26,24 @@ namespace CarguerosWebServer.Controllers
         {
             return containerRepository.containerArrive(idContainer, route);
         }
+
+        [HttpPost]
+        [ActionName("createContainer")]
+        public String createContainer(String weight)
+        {
+            try
+            {
+                float aux_price = float.Parse(weight, System.Globalization.CultureInfo.InvariantCulture);
+                if (containerRepository.createContainer(weight) == 200) { return "Sucess"; }
+                else { return "fail"; }
+            }
+            catch (Exception)
+            {
+                return "fail";
+            }
+        }   
+
+       
         
         
     }

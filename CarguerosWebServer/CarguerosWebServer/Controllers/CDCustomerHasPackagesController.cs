@@ -27,8 +27,25 @@ namespace CarguerosWebServer.Controllers
         public CustomerHasPackages[] packageArrive(int account, int idPackage)
         {
             return CustomerHasPackagesRepository.packageArrive(account, idPackage);           
-        }     
+        }
 
+        [HttpGet]
+        [ActionName("bestCustomers")]
+        public CustomerHasPackages[] bestCustomers(int ammount)
+        {
+            return CustomerHasPackagesRepository.bestCustomers(ammount);
+        }
+
+
+        [HttpGet]
+        [ActionName("worstCustomers")]
+        public CustomerHasPackages[] worstCustomers(int ammount)
+        {            
+            return CustomerHasPackagesRepository.worstCustomers(ammount);
+        }
+        
+        
+        
        
     }
 }

@@ -68,7 +68,7 @@ namespace CarguerosWebServer.Services
                 if (dataTable.Columns.Contains("name") && row["name"] != DBNull.Value) { name = Convert.ToString(row["name"]); }
                 if (dataTable.Columns.Contains("last_name") && row["last_name"] != DBNull.Value) { last_name = Convert.ToString(row["last_name"]); }
                 if (dataTable.Columns.Contains("telephone") && row["telephone"] != DBNull.Value) { telephone = Convert.ToString(row["telephone"]); }
-                if (dataTable.Columns.Contains("role") && row["role"] != DBNull.Value) { role = Convert.ToString(row["role"]); }
+                if (dataTable.Columns.Contains("Role") && row["Role"] != DBNull.Value) { role = Convert.ToString(row["Role"]); }
 
                 listEmployee.Add(new Employee
                 {

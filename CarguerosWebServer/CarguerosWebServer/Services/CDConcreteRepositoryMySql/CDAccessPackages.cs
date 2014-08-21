@@ -19,12 +19,12 @@ namespace CarguerosWebServer.Services
 
         }
 
-        public override int createPackage(int weight,int size, String type, int price, String description,int account)
+        public override int createPackage(int weight,int size, String type, String price, String description,int account)
         {
             String aux_description = changeBacketsForSpace(description);
             String aux_type = changeBacketsForSpace(type);
 
-            long idPackage = mySQLConnection.makePostQuery("INSERT INTO Packages SET weight = " + weight + ",size = " + size + " ,type = '" + type + "' ,price = " + price + " , description = '" + description + "';");
+            long idPackage = mySQLConnection.makePostQuery("INSERT INTO Packages SET weight = " + weight + ",size = " + size + " ,type = '" + type + "' ,price = '" + price + "' , description = '" + description + "';");
             int idPackageAux = Convert.ToInt32(idPackage);
             mySQLConnection.makeQuery("CALL `Register_Packages`(" + idPackage + "," + account + "," + price + ");");
             return idPackageAux;
@@ -56,7 +56,7 @@ namespace CarguerosWebServer.Services
         public List<Packages> getTabledetailsPakages(DataSet dataSet, int account)
         {
             int idPackages = -1;
-            int price = -1;
+            double price = -1;
             String costumer = "-";
             String packageState = "-";
             String containerArrivalDate = "-";
@@ -66,14 +66,17 @@ namespace CarguerosWebServer.Services
             foreach (DataTable dataTable in dataSet.Tables)
             {
                 foreach (DataRow row in dataTable.Rows)
-                {
+                {//row["price"].ToString
                     if (dataTable.Columns.Contains("idPackages") && row["idPackages"] != DBNull.Value) { idPackages = Convert.ToInt32(row["idPackages"]); }
                     if (dataTable.Columns.Contains("costumer") && row["costumer"] != DBNull.Value) { costumer = row["costumer"].ToString(); }
-                    if (dataTable.Columns.Contains("packageState") && row["packageState"] != DBNull.Value) { packageState = row["packageState"].ToString(); }
-                    if (dataTable.Columns.Contains("price") && row["price"] != DBNull.Value) { price = Convert.ToInt32(row["price"]); }
-                    if (dataTable.Columns.Contains("containerArrivalDate") && row["containerArrivalDate"] != DBNull.Value) { containerArrivalDate = row["containerArrivalDate"].ToString(); }
-                    if (dataTable.Columns.Contains("container") && row["container"] != DBNull.Value) { container = row["container"].ToString(); }
-                    if (dataTable.Columns.Contains("arrivalDate") && row["arrivalDate"] != DBNull.Value) { arrivalDate = row["arrivalDate"].ToString(); }
+                    if (dataTable.Columns.Contains("package_state") && row["package_state"] != DBNull.Value) { packageState = row["package_state"].ToString(); }
+                    if (dataTable.Columns.Contains("Cost") && row["Cost"] != DBNull.Value)
+                    {
+                        price = float.Parse(row["Cost"].ToString(), System.Globalization.CultureInfo.InvariantCulture); 
+                    }
+                    if (dataTable.Columns.Contains("Container_arrivalDate") && row["Container_arrivalDate"] != DBNull.Value) { containerArrivalDate = row["Container_arrivalDate"].ToString(); }
+                    if (dataTable.Columns.Contains("Container") && row["Container"] != DBNull.Value) { container = row["Container"].ToString(); }
+                    if (dataTable.Columns.Contains("Fecha estimada de arribo") && row["Fecha estimada de arribo"] != DBNull.Value) { arrivalDate = row["Fecha estimada de arribo"].ToString(); }
                     listPackages.Add(new Packages
                     {
                         account=account,
@@ -97,7 +100,7 @@ namespace CarguerosWebServer.Services
             return listPackages;
         }
 
-        public void rebootVargetTabledetailsPakages(ref int idPackages, ref int price, ref  String costumer, ref  String packageState, 
+        public void rebootVargetTabledetailsPakages(ref int idPackages, ref double price, ref  String costumer, ref  String packageState, 
             ref  String containerArrivalDate, ref  String container, ref  String arrivalDate)
         {
             idPackages = -1;

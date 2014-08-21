@@ -18,6 +18,12 @@ namespace CarguerosWebServer.Services
 
         }
 
+        public override int createContainer(String weight)
+        {
+            mySQLConnection.makeQuery("CALL `Create_Container`('" +weight+ "');");
+            return HttpContext.Current.Response.StatusCode;
+        }
+
 
         public override Container[] containerArrive(int idContainer, int route)
         {

@@ -38,7 +38,7 @@ namespace CarguerosWebServer.Controllers
 
         [HttpPost]
         [ActionName("createPackage")]
-        public String createPackage(int weight, int size, String type, int price, String description, int account)
+        public String createPackage(int weight, int size, String type, String price, String description, int account)
         {
             int id = packagesRepository.createPackage(weight, size, type, price, description, account);
             return Convert.ToString(id);

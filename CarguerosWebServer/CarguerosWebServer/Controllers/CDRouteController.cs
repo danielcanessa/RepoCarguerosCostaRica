@@ -21,12 +21,44 @@ namespace CarguerosWebServer.Controllers
            
            
         }
-       
+
+        [HttpPost]
+        [ActionName("createRoute")]
+        public String createRoute(String name, String exitPoint, String arrivalPoint, String price, int duration, int maxAmount)
+        {
+            try
+            {
+                float aux_price = float.Parse(price, System.Globalization.CultureInfo.InvariantCulture);
+                if (routeRepository.createRoute(name, exitPoint, arrivalPoint, price, duration, maxAmount) == 200) { return "Sucess"; }
+                else { return "fail"; }
+            }
+            catch (Exception)
+            {
+                return "fail";
+            }
+        }   
+        
+
         [HttpGet]
-        [ActionName("1")]
-        public Route[] allRoute()
-        {    
-            return routeRepository.showAllRoute();            
-        }      
+        [ActionName("showRoutes")]
+        public Route[] createRoute()
+        {
+            return routeRepository.showRoutes();
+        }
+
+        [HttpGet]
+        [ActionName("bestRoutes")]
+        public Route[] bestRoutes(int ammount)
+        {
+            return routeRepository.bestRoutes(ammount);
+        }
+
+        [HttpGet]
+        [ActionName("worstRoutes")]
+        public Route[] worstRoutes(int ammount)
+        {
+            return routeRepository.worstRoutes(ammount);
+        }   
+      
     }
 }

@@ -8,6 +8,12 @@ namespace CarguerosWebServer.Services
 {
     public abstract class CDRouteRepository
     {
-        public abstract Route[] showAllRoute();
+        public abstract int createRoute(String name, String exitPoint, String arrivalPoint, String price, int duration, int maxAmount);
+
+        public abstract Route[] showRoutes();
+
+        public abstract Route[] bestRoutes(int ammount);
+
+        public abstract Route[] worstRoutes(int ammount);
     }
 }

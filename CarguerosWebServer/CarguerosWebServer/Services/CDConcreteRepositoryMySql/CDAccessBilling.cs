@@ -19,10 +19,11 @@ namespace CarguerosWebServer.Services
       
         }
 
-        public override Billing[] showAllBilling()
+        public override Billing[] showcostumerBilling(int account)
         {
-            DataSet dataSet = mySQLConnection.makeQuery("SELECT * FROM billing.billing;"); 
-            List<Billing> listBilling = getTableBilling(dataSet);    
+            HttpContext.Current.Cache.Remove(CacheKey);
+            DataSet dataSet = mySQLConnection.makeQuery("CALL `Costumer_Bills`("+account+");");
+            List<Billing> listBilling = getTableShowcostumerBilling(dataSet);    
             var ctx = HttpContext.Current;            
             if (ctx != null)
             {
@@ -36,31 +37,46 @@ namespace CarguerosWebServer.Services
 
 
 
-        public  List<Billing> getTableBilling(DataSet dataSet)
+        public List<Billing> getTableShowcostumerBilling(DataSet dataSet)
         {
+            int idBilling = -1;
+            int tax = -1;
+            int costStorage = 0; //In the case that it is null, is the same than a 0
+            int discount = -1;
+            int freight = -1; 
             List<Billing> listBilling = new List<Billing>();
-            foreach (DataTable table in dataSet.Tables)
+            foreach (DataTable dataTable in dataSet.Tables)
             {
-                foreach (DataRow row in table.Rows)
-                {          
-                   // row.Field<>;
-                    int idBilling = Convert.ToInt32(row[0]);
-                    int tax = Convert.ToInt32(row[1]);
-                    int costStorage = Convert.ToInt32(row[2]);
-                    int discount = Convert.ToInt32(row[3]);
-                    int freight = Convert.ToInt32(row[4]);                   
+                foreach (DataRow row in dataTable.Rows)
+                {
+                    if (dataTable.Columns.Contains("idBilling") && row["idBilling"] != DBNull.Value) { idBilling = Convert.ToInt32(row["idBilling"]); }
+                    if (dataTable.Columns.Contains("tax") && row["tax"] != DBNull.Value) { tax = Convert.ToInt32(row["tax"]); }
+                    if (dataTable.Columns.Contains("costStorage") && row["costStorage"] != DBNull.Value) { costStorage = Convert.ToInt32(row["costStorage"]); }
+                    if (dataTable.Columns.Contains("discount") && row["discount"] != DBNull.Value) { discount = Convert.ToInt32(row["discount"]); }
+                    if (dataTable.Columns.Contains("freight") && row["freight"] != DBNull.Value) { freight = Convert.ToInt32(row["freight"]); }
+
                     listBilling.Add(new Billing{
                         idBilling = idBilling,
                         tax = tax,
                         costStorage = costStorage,
                         discount = discount,
                         freight = freight
-                    }
-                    );
+                    });
+                    rebootVarShowcostumerBilling(ref  idBilling, ref  tax, ref  costStorage, ref  discount, ref  freight);
                 }
             }
             return listBilling;
         }
+
+        public void rebootVarShowcostumerBilling(ref int idBilling, ref int tax, ref int costStorage, ref int discount, ref int freight)
+        {
+             idBilling = -1;
+             tax = -1;
+             costStorage = 0;
+             discount = -1;
+             freight = -1; 
+
+        }  
 
         public Billing[] GetBilling()
         {
@@ -70,17 +86,8 @@ namespace CarguerosWebServer.Services
             {
                 return (Billing[])ctx.Cache[CacheKey];
             }
-            return new Billing[]
-        {
-            new Billing
-            {
-                idBilling = 0,
-                tax = 0,
-                costStorage = 0,
-                discount = 0,
-                freight = 0
-            }
-        };
+            return null;
+       
         }       
     }
 }

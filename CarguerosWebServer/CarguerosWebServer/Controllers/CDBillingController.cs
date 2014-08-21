@@ -24,11 +24,11 @@ namespace CarguerosWebServer.Controllers{
         }
        
         [HttpGet]
-        [ActionName("1")]
-        public Billing[] allBilling()
+        [ActionName("showcostumerBilling")]
+        public Billing[] showcostumerBilling(int account)
         {    
-            return billingRepository.showAllBilling();            
+            return billingRepository.showcostumerBilling(account);            
         }      
-
+        
     }
 }

@@ -19,6 +19,85 @@ namespace CarguerosWebServer.Services
 
         }
 
+        public override CustomerHasPackages[] bestCustomers(int ammount)
+        {
+            HttpContext.Current.Cache.Remove(CacheKey);
+            DataSet dataSet = mySQLConnection.makeQuery("CALL `Best_Customers`(" + ammount + ");");
+            List<CustomerHasPackages> ListCustomer = getBestWorstCustomer(dataSet);
+            var ctx = HttpContext.Current;
+            if (ctx != null)
+            {
+                if (ctx.Cache[CacheKey] == null)
+                {
+                    ctx.Cache[CacheKey] = ListCustomer.ToArray();
+                }
+            }
+            return GetCustomerHasPackages();
+        }
+
+        public List<CustomerHasPackages> getBestWorstCustomer(DataSet dataSet)
+        {
+            List<CustomerHasPackages> listCustomer = new List<CustomerHasPackages>();
+
+            int customerAccount = -1;
+            int packagesIdPackages  = -1;
+            String packageState  = "-";
+            int billingIdBilling = -1;
+            String name = "-";
+            int total = -1;
+
+
+            foreach (DataTable dataTable in dataSet.Tables)
+            {
+                foreach (DataRow row in dataTable.Rows)
+                {
+                    if (dataTable.Columns.Contains("totalB") && row["totalB"] != DBNull.Value) { total = Convert.ToInt32(row["totalB"]); }
+                    if (dataTable.Columns.Contains("name") && row["name"] != DBNull.Value) { name = Convert.ToString(row["name"]); }
+                   
+
+                    listCustomer.Add(new CustomerHasPackages
+                    {
+                        customerAccount = customerAccount,
+                        packagesIdPackages = packagesIdPackages,
+                        packageState = packageState,
+                        billingIdBilling = billingIdBilling,
+                        name = name,
+                        total = total                      
+
+                    });
+                    rebootBestWorstCustomer(ref total, ref name);
+
+
+                }
+            }
+            return listCustomer;
+        }
+
+        public override CustomerHasPackages[] worstCustomers(int ammount)
+        {
+            HttpContext.Current.Cache.Remove(CacheKey);
+            DataSet dataSet = mySQLConnection.makeQuery("CALL `worst_Customers`("+ammount+");");
+            List<CustomerHasPackages> ListCustomer = getBestWorstCustomer(dataSet);
+            var ctx = HttpContext.Current;
+            if (ctx != null)
+            {
+                if (ctx.Cache[CacheKey] == null)
+                {
+                    ctx.Cache[CacheKey] = ListCustomer.ToArray();
+                }
+            }
+            return GetCustomerHasPackages();
+        }
+
+        
+        
+        private void rebootBestWorstCustomer(ref int total, ref string name)
+        {
+            name = "-";
+            total = -1;
+        }
+      
+
         public override CustomerHasPackages[] packageArrive(int account, int idPackage)
         {
             HttpContext.Current.Cache.Remove(CacheKey);
@@ -42,6 +121,8 @@ namespace CarguerosWebServer.Services
 
             String packageState = "-";
             int billingIdBilling = -1;
+            String name = "-";
+            int total = -1;
 
             DataTable dataTable = dataSet.Tables[0];
             if (dataTable.Rows.Count > 0)
@@ -59,6 +140,8 @@ namespace CarguerosWebServer.Services
                     packagesIdPackages = packagesIdPackages,
                     packageState = packageState,
                     billingIdBilling = billingIdBilling,
+                    name = name,
+                    total = total
                 }
                 );
             }

@@ -18,40 +18,89 @@ namespace CarguerosWebServer.Services
       
         }
 
-        public override Route[] showAllRoute()
+        public override int createRoute(String name, String exitPoint, String arrivalPoint , String price, int duration, int maxAmount)
         {
-            DataSet dataSet = mySQLConnection.makeQuery("SELECT * FROM universidad.estudiante;"); 
-            List<Route> listRoute = getTableRoute(dataSet);    
-            var ctx = HttpContext.Current;            
+          
+            mySQLConnection.makeQuery("CALL `Create_Route`('" + name + "', '" + exitPoint + "','" + arrivalPoint + "','" + price+ "'," + duration + "," + maxAmount + ");");
+            return HttpContext.Current.Response.StatusCode;
+        }
+
+        public override Route[] bestRoutes(int ammount)
+        {
+            HttpContext.Current.Cache.Remove(CacheKey);
+            DataSet dataSet = mySQLConnection.makeQuery("CALL `Best_Routes`("+ammount+");");
+            List<Route> listRoute = getTableBestWorstRoutes(dataSet);
+            var ctx = HttpContext.Current;
             if (ctx != null)
             {
                 if (ctx.Cache[CacheKey] == null)
                 {
-                    ctx.Cache[CacheKey] = listRoute.ToArray();                     
+                    ctx.Cache[CacheKey] = listRoute.ToArray();
                 }
             }
             return GetRoute();
         }
 
-
-
-        public  List<Route> getTableRoute(DataSet dataSet)
+        public override Route[] worstRoutes(int ammount)
         {
-            List<Route> listRoute = new List<Route>();
-            foreach (DataTable table in dataSet.Tables)
+            HttpContext.Current.Cache.Remove(CacheKey);
+            DataSet dataSet = mySQLConnection.makeQuery("CALL `Worst_Routes`("+ammount+");");
+            List<Route> listRoute = getTableBestWorstRoutes(dataSet);
+            var ctx = HttpContext.Current;
+            if (ctx != null)
             {
-                foreach (DataRow row in table.Rows)
+                if (ctx.Cache[CacheKey] == null)
                 {
-                    int idRoute = Convert.ToInt32(row[0]);
-                    int cost = Convert.ToInt32(row[1]);
-                    int duration = Convert.ToInt32(row[2]);
-                    int maxAmount = Convert.ToInt32(row[3]);
-                    int customerAccount = Convert.ToInt32(row[4]);
-                    String name = row[5].ToString();
-                    String exitPoint = row[6].ToString();
-                    String arrivalPoint = row[7].ToString();
-                                  
-                    listRoute.Add(new Route{
+                    ctx.Cache[CacheKey] = listRoute.ToArray();
+                }
+            }
+            return GetRoute();
+        }
+
+        public override Route[] showRoutes()
+        {
+            HttpContext.Current.Cache.Remove(CacheKey);
+            DataSet dataSet = mySQLConnection.makeQuery("CALL `View_Routes` ();");
+            List<Route> listRoute = getTableBestWorstRoutes(dataSet);
+            var ctx = HttpContext.Current;
+            if (ctx != null)
+            {
+                if (ctx.Cache[CacheKey] == null)
+                {
+                    ctx.Cache[CacheKey] = listRoute.ToArray();
+                }
+            }
+            return GetRoute();
+        }
+
+        private void rebootVarShowRoute(ref string name, ref int uses)
+        {
+            name = "-";
+            uses = -1;
+        }
+
+
+        public List<Route> getTableBestWorstRoutes(DataSet dataSet)
+        {
+            int idRoute = -1;
+            double cost = -1;
+            int duration = -1;
+            int maxAmount = -1;
+            int uses = -1;
+            int customerAccount = -1;
+            String name = "-";
+            String exitPoint = "-";
+            String arrivalPoint = "-";
+            List<Route> listRoute = new List<Route>();
+
+            foreach (DataTable dataTable in dataSet.Tables)
+            {
+                foreach (DataRow row in dataTable.Rows)
+                {
+                    if (dataTable.Columns.Contains("name") && row["name"] != DBNull.Value) { name = row["name"].ToString(); }
+                    if (dataTable.Columns.Contains("Uses") && row["Uses"] != DBNull.Value) { uses = Convert.ToInt32(row["Uses"]); }
+                    listRoute.Add(new Route
+                    {
                         idRoute = idRoute,
                         cost = cost,
                         duration = duration,
@@ -59,12 +108,75 @@ namespace CarguerosWebServer.Services
                         customerAccount = customerAccount,
                         name = name,
                         exitPoint = exitPoint,
-                        arrivalPoint = arrivalPoint                       
-                    }
-                    );
+                        arrivalPoint = arrivalPoint,
+                        uses = uses
+                    });
+                    rebootVarShowRoute(ref  name, ref  uses);
                 }
             }
             return listRoute;
+        }
+
+        
+        public List<Route> getTableShowRoute(DataSet dataSet)
+        {
+            int idRoute = -1;
+            double cost  = -1;
+            int duration  = -1;
+            int maxAmount  = -1;
+            int uses = -1;
+            int customerAccount  = -1;
+            String name = "-";
+            String exitPoint = "-";
+            String arrivalPoint = "-";           
+            List<Route> listRoute = new List<Route>();
+
+            foreach (DataTable dataTable in dataSet.Tables)
+            {
+                foreach (DataRow row in dataTable.Rows)
+                {
+                    if (dataTable.Columns.Contains("idRoute") && row["idRoute"] != DBNull.Value) { idRoute = Convert.ToInt32(row["idRoute"]); }
+                    if (dataTable.Columns.Contains("duration") && row["duration"] != DBNull.Value) { duration = Convert.ToInt32(row["duration"]); }
+                    if (dataTable.Columns.Contains("max_amount") && row["max_amount"] != DBNull.Value) { maxAmount = Convert.ToInt32(row["max_amount"]); }
+                    if (dataTable.Columns.Contains("customerAccount") && row["customerAccount"] != DBNull.Value) { customerAccount = Convert.ToInt32(row["customerAccount"]); }
+                    if (dataTable.Columns.Contains("cost") && row["cost"] != DBNull.Value)
+                    { 
+                        cost =  float.Parse(row["cost"].ToString(), System.Globalization.CultureInfo.InvariantCulture); 
+                    }
+                    if (dataTable.Columns.Contains("name") && row["name"] != DBNull.Value) { name = row["name"].ToString(); ; }
+                    if (dataTable.Columns.Contains("exit_point") && row["exit_point"] != DBNull.Value) { exitPoint = row["exit_point"].ToString(); ; }
+                    if (dataTable.Columns.Contains("arrival_point") && row["arrival_point"] != DBNull.Value) { arrivalPoint = row["arrival_point"].ToString(); ; }
+                  
+
+                    listRoute.Add(new Route
+                    {
+                          idRoute = idRoute,
+                          cost  = cost,
+                          duration  = duration,
+                          maxAmount  = maxAmount,
+                          customerAccount  = customerAccount,
+                          name = name,
+                          exitPoint = exitPoint,
+                          arrivalPoint = arrivalPoint,
+                          uses = uses
+                    });
+                    rebootVarShowRoute(ref  idRoute, ref  cost, ref  duration, ref  maxAmount, ref  customerAccount, ref  name, ref  exitPoint, ref  arrivalPoint);
+                }
+            }
+            return listRoute;
+        }
+
+        private void rebootVarShowRoute(ref int idRoute, ref double cost, ref int duration, ref int maxAmount, ref int customerAccount, ref string name, ref string exitPoint, ref string arrivalPoint)
+        {
+            idRoute = -1;
+            cost = -1;
+            duration = -1;
+            maxAmount = -1;
+            customerAccount = -1;
+            name = "-";
+            exitPoint = "-";
+            arrivalPoint = "-";   
+           
         }
 
         public Route[] GetRoute()
@@ -75,20 +187,8 @@ namespace CarguerosWebServer.Services
             {
                 return (Route[])ctx.Cache[CacheKey];
             }
-            return new Route[]
-        {
-            new Route
-            {
-                idRoute = 0,
-                cost = 0,
-                duration = 0,
-                maxAmount = 0,
-                customerAccount = 0,
-                name = "",
-                exitPoint = "",
-                arrivalPoint = ""   
-            }
-        };
+            return null;
+       
         }       
     }
 }

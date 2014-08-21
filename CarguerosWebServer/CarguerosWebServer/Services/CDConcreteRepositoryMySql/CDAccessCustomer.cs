@@ -18,6 +18,8 @@ namespace CarguerosWebServer.Services
         }
 
 
+        
+
 
         public override int createCustomer(String name, String last_name, String telephone, String password, int route)
         {
@@ -30,7 +32,7 @@ namespace CarguerosWebServer.Services
         public override Customer[] loginCustomer(String password, int account)
         {
             HttpContext.Current.Cache.Remove(CacheKey);
-            DataSet dataSet = mySQLConnection.makeQuery("CALL `Login_Customer`('" + password + "'," + account + ")");
+            DataSet dataSet = mySQLConnection.makeQuery("CALL `Login_Customer`('" + password + "'," + account + ");");
             List<Customer> ListCustomer = getLoginCustomer(dataSet);
             var ctx = HttpContext.Current;
             if (ctx != null)
