@@ -16,6 +16,5 @@ namespace CarguerosWebServer.Models
         public int discount { get; set; }
 
         public int freight { get; set; }
-
     }
 }

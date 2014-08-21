@@ -11,24 +11,34 @@ namespace CarguerosWebServer.Controllers
 {
     public class CDPackagesController : ApiController
     {
+        //Instance of this controller
         private CDPackagesRepository packagesRepository;
 
+        /*
+         * public CDPackagesController()
+         * Constructor of the controller
+         */
         public CDPackagesController()
         {
-            
             CDConcreteFactoryWebServer factory = CDConcreteFactoryWebServer.Instance;
             this.packagesRepository = factory.CreateCDPackagesRepository();
-           
-           
         }
-       
+
+        /*
+         * public Packages[] allPackagesPerUser(int account)
+         * Method for return all the packages of a customer
+         */
         [HttpGet]
         [ActionName("UserPackages")]
         public Packages[] allPackagesPerUser(int account)
-        {            
+        {
             return packagesRepository.packagesUser(account);
         }
 
+        /*
+         * public Packages[] packagesDetailsPerUser(int account)
+         * Method for return the details of all package of a specific customer 
+         */
         [HttpGet]
         [ActionName("PackagesDetails")]
         public Packages[] packagesDetailsPerUser(int account)
@@ -36,6 +46,10 @@ namespace CarguerosWebServer.Controllers
             return packagesRepository.detailsPackages(account);
         }
 
+        /*
+         * public String createPackage(int weight, int size, String type, String price, String description, int account)
+         * Method for create a new package, return the ID of the new package
+         */
         [HttpPost]
         [ActionName("createPackage")]
         public String createPackage(int weight, int size, String type, String price, String description, int account)
@@ -43,6 +57,6 @@ namespace CarguerosWebServer.Controllers
             int id = packagesRepository.createPackage(weight, size, type, price, description, account);
             return Convert.ToString(id);
         }
-           
+
     }
 }

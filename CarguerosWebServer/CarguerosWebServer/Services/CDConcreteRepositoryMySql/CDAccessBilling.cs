@@ -11,14 +11,18 @@ namespace CarguerosWebServer.Services
 {
     public class CDAccessBilling : CDBillingRepository
     {
+        //Cache key that represent Billing
         public const string CacheKey = "BillingStore";
         CDMySQLConnection mySQLConnection = CDMySQLConnection.Instance;
-
+        
         public CDAccessBilling()
         {    
-      
         }
 
+        /*
+         * public override Billing[] showcostumerBilling(int account)
+         * Method for get of the data base all the billings of a costumer 
+         */
         public override Billing[] showcostumerBilling(int account)
         {
             HttpContext.Current.Cache.Remove(CacheKey);

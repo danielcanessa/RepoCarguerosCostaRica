@@ -11,18 +11,23 @@ namespace CarguerosWebServer.Controllers
 {
     public class CDStorageController : ApiController
     {
+        //Instance of this controller
         private CDStorageRepository storageRepository;
 
+        /*
+         * public CDStorageController()
+         * Constructor of the controller
+         */
         public CDStorageController()
-        {
-            
+        {            
             CDConcreteFactoryWebServer factory = CDConcreteFactoryWebServer.Instance;
             this.storageRepository = factory.CreateCDStorageRepository();
-           
-           
         }
 
-               
+        /*
+         * public Storage[] averagePackageStorage()
+         * Method for return the average time of the packages in Storage
+         */
         [HttpGet]
         [ActionName("averagePackageStorage")]
         public Storage[] averagePackageStorage()
@@ -30,6 +35,10 @@ namespace CarguerosWebServer.Controllers
             return storageRepository.averagePackageStorage();         
         }
 
+        /*
+         * public Storage[] showPackageInStorage()
+         * Method for return all the package in storage
+         */
         [HttpGet]
         [ActionName("showPackageInStorage")]
         public Storage[] showPackageInStorage()

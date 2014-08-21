@@ -8,13 +8,13 @@ using System.Web;
 
 namespace CarguerosWebServer.Services
 {
+    /*
+     * public abstract class CDCustomerRepository
+     * Interface for implement in CDAcessCustomer
+     */
     public abstract class CDCustomerRepository
     {
-
         public abstract Customer[] loginCustomer(String password, int account);
-
         public abstract int createCustomer(String name, String last_name, String telephone, String password, int route);
-
     }
-
 }

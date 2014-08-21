@@ -6,8 +6,12 @@ using System.Web;
 
 namespace CarguerosWebServer.Services
 {
+    /*
+     * public abstract class CDBillingRepository
+     * Interface for implement in CDAcessBilling
+     */
     public abstract class CDBillingRepository
-    {
+    {      
         public abstract Billing[] showcostumerBilling(int account);
     }
 }

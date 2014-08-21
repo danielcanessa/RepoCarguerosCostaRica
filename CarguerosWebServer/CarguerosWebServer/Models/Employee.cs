@@ -17,7 +17,6 @@ namespace CarguerosWebServer.Models
 
         public String password { get; set; }
 
-        public String role { get; set; }
-        
+        public String role { get; set; }        
     }
 }

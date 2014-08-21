@@ -62,6 +62,9 @@ namespace CarguerosWebServer.Services
             String containerArrivalDate = "-";
             String container = "-";
             String arrivalDate = "-";
+            int size = -1;
+            int weight = -1;
+            String type = "-";
             List<Packages> listPackages = new List<Packages>();
             foreach (DataTable dataTable in dataSet.Tables)
             {
@@ -76,7 +79,10 @@ namespace CarguerosWebServer.Services
                     }
                     if (dataTable.Columns.Contains("Container_arrivalDate") && row["Container_arrivalDate"] != DBNull.Value) { containerArrivalDate = row["Container_arrivalDate"].ToString(); }
                     if (dataTable.Columns.Contains("Container") && row["Container"] != DBNull.Value) { container = row["Container"].ToString(); }
-                    if (dataTable.Columns.Contains("Fecha estimada de arribo") && row["Fecha estimada de arribo"] != DBNull.Value) { arrivalDate = row["Fecha estimada de arribo"].ToString(); }
+                    if (dataTable.Columns.Contains("Estimated_Date_Arrival") && row["Estimated_Date_Arrival"] != DBNull.Value) { arrivalDate = row["Estimated_Date_Arrival"].ToString(); }
+                    if (dataTable.Columns.Contains("type") && row["type"] != DBNull.Value) { type = row["size"].ToString(); }
+                    if (dataTable.Columns.Contains("size") && row["size"] != DBNull.Value) { size = Convert.ToInt32(row["size"]); }
+                    if (dataTable.Columns.Contains("weight") && row["weight"] != DBNull.Value) { weight = Convert.ToInt32(row["weight"]); }
                     listPackages.Add(new Packages
                     {
                         account=account,
@@ -86,10 +92,10 @@ namespace CarguerosWebServer.Services
                         containerArrivalDate = containerArrivalDate,
                         container = container,
                         arrivalDate = arrivalDate,
-                        weight = -1,
-                        size = -1,
+                        weight = weight,
+                        size = size,
                         price = price,
-                        type = "-",
+                        type = type,
                         description = "-"
 
                     }  
