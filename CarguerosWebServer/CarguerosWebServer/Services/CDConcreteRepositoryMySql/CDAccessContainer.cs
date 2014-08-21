@@ -24,6 +24,76 @@ namespace CarguerosWebServer.Services
             return HttpContext.Current.Response.StatusCode;
         }
 
+        public override Container[] leastUsedContainers(int ammount)
+        {
+            HttpContext.Current.Cache.Remove(CacheKey);
+            DataSet dataSet = mySQLConnection.makeQuery("CALL `Least_Used_Containers`("+ammount+");");
+            List<Container> listContainer = getTableMostLeastUsedContainers(dataSet);
+            var ctx = HttpContext.Current;
+            if (ctx != null)
+            {
+                if (ctx.Cache[CacheKey] == null)
+                {
+                    ctx.Cache[CacheKey] = listContainer.ToArray();
+                }
+            }
+            return GetContainer();
+        }
+
+        public override Container[] mostUsedContainers(int ammount)
+        {
+            HttpContext.Current.Cache.Remove(CacheKey);
+            DataSet dataSet = mySQLConnection.makeQuery("CALL `Most_Used_Containers`("+ammount+")");
+            List<Container> listContainer = getTableMostLeastUsedContainers(dataSet);
+            var ctx = HttpContext.Current;
+            if (ctx != null)
+            {
+                if (ctx.Cache[CacheKey] == null)
+                {
+                    ctx.Cache[CacheKey] = listContainer.ToArray();
+                }
+            }
+            return GetContainer();
+        }
+
+        public List<Container> getTableMostLeastUsedContainers(DataSet dataSet)
+        {
+            int idContainer = -1;
+            int route = -1;   
+            int containerArrive = -1;
+            int maxWeight = -1;
+            int uses = -1;
+            List<Container> listContainer = new List<Container>();
+
+            foreach (DataTable dataTable in dataSet.Tables)
+            {
+                foreach (DataRow row in dataTable.Rows)
+                {
+                    if (dataTable.Columns.Contains("NumContainer") && row["NumContainer"] != DBNull.Value) { idContainer = Convert.ToInt32(row["NumContainer"]); }
+                    if (dataTable.Columns.Contains("Uses") && row["Uses"] != DBNull.Value) { uses = Convert.ToInt32(row["Uses"]); }
+
+
+                    listContainer.Add(new Container
+                    {
+                        idContainer = idContainer,
+                        route = route,
+                        containerArrive = containerArrive,
+                        maxWeight = maxWeight,
+                        uses = uses
+                    }
+                    );
+                    rebootVarCreateCustomer(ref idContainer, ref uses);
+                }
+            }
+            return listContainer;
+        }
+
+        private void rebootVarCreateCustomer(ref int idContainer, ref int uses)
+        {
+            idContainer = -1;
+            uses = -1;
+        }
+
 
         public override Container[] containerArrive(int idContainer, int route)
         {
@@ -45,6 +115,7 @@ namespace CarguerosWebServer.Services
         {
             int containerArrive = -1;
             int maxWeight = -1;
+            int uses = -1;
             List<Container> listContainer = new List<Container>();
 
             foreach (DataTable dataTable in dataSet.Tables)
@@ -59,7 +130,8 @@ namespace CarguerosWebServer.Services
                         idContainer = idContainer,
                         route = route,
                         containerArrive = containerArrive,
-                        maxWeight = maxWeight
+                        maxWeight = maxWeight,
+                        uses=uses
                     }
                     );
                 }

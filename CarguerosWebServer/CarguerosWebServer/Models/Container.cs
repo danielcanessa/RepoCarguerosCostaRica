@@ -14,6 +14,8 @@ namespace CarguerosWebServer.Models
         public int containerArrive { get; set; }
         
         public int maxWeight { get; set; }
+
+        public int uses { get; set; }
         
     }
 }

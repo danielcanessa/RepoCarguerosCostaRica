@@ -27,6 +27,21 @@ namespace CarguerosWebServer.Controllers
             return containerRepository.containerArrive(idContainer, route);
         }
 
+        [HttpGet]
+        [ActionName("leastUsedContainers")]
+        public Container[] leastUsedContainers(int ammount)
+        {
+            return containerRepository.leastUsedContainers(ammount);
+        }
+
+        [HttpGet]
+        [ActionName("mostUsedContainers")]
+        public Container[] mostUsedContainers(int ammount)
+        {
+            return containerRepository.mostUsedContainers(ammount);
+        }
+       
+
         [HttpPost]
         [ActionName("createContainer")]
         public String createContainer(String weight)

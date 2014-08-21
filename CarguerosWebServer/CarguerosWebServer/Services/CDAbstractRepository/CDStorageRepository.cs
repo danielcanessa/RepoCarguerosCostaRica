@@ -8,6 +8,9 @@ namespace CarguerosWebServer.Services
 {
     public abstract class CDStorageRepository
     {
-        public abstract Storage[] showAllStorage();
+
+        public abstract Storage[] averagePackageStorage();
+
+        public abstract Storage[] showPackageInStorage();
     }
 }

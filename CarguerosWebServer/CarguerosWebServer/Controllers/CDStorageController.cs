@@ -21,12 +21,20 @@ namespace CarguerosWebServer.Controllers
            
            
         }
-       
+
+               
         [HttpGet]
-        [ActionName("1")]
-        public Storage[] allStorage()
-        {    
-            return storageRepository.showAllStorage();            
-        }      
+        [ActionName("averagePackageStorage")]
+        public Storage[] averagePackageStorage()
+        {
+            return storageRepository.averagePackageStorage();         
+        }
+
+        [HttpGet]
+        [ActionName("showPackageInStorage")]
+        public Storage[] showPackageInStorage()
+        {
+            return storageRepository.showPackageInStorage();
+        }     
     }
 }
