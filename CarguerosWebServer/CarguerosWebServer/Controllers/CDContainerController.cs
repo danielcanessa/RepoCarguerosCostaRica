@@ -58,6 +58,17 @@ namespace CarguerosWebServer.Controllers
         }
 
         /*
+         * public Container[] containerVsRoute()
+         * Method that return a list of the uses of the container classified by route
+         */
+        [HttpGet]
+        [ActionName("containerVsRoute")]
+        public Container[] containerVsRoute()
+        {
+            return containerRepository.containerVsRoute();
+        }
+
+        /*
          * public Container[] containersInRoute()
          * Method that return all the containers in route
          */
@@ -88,9 +99,5 @@ namespace CarguerosWebServer.Controllers
                 return "fail";
             }
         }   
-
-       
-        
-        
     }
 }

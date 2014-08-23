@@ -14,40 +14,43 @@ namespace CarguerosWebServer.Services
         //Cache key that represent Billing
         public const string CacheKey = "BillingStore";
         CDMySQLConnection mySQLConnection = CDMySQLConnection.Instance;
-        
+
         public CDAccessBilling()
-        {    
+        {
         }
 
         /*
          * public override Billing[] showcostumerBilling(int account)
-         * Method for get of the data base all the billings of a costumer 
+         * GET Method for get of the data base all the billings of a costumer 
          */
         public override Billing[] showcostumerBilling(int account)
         {
             HttpContext.Current.Cache.Remove(CacheKey);
-            DataSet dataSet = mySQLConnection.makeQuery("CALL `Costumer_Bills`("+account+");");
-            List<Billing> listBilling = getTableShowcostumerBilling(dataSet);    
-            var ctx = HttpContext.Current;            
+            DataSet dataSet = mySQLConnection.makeQuery("CALL `Costumer_Bills`(" + account + ");");
+            List<Billing> listBilling = getTableShowcostumerBilling(dataSet);
+            var ctx = HttpContext.Current;
             if (ctx != null)
             {
                 if (ctx.Cache[CacheKey] == null)
                 {
-                    ctx.Cache[CacheKey] = listBilling.ToArray();                     
+                    ctx.Cache[CacheKey] = listBilling.ToArray();
                 }
             }
             return GetBilling();
         }
 
 
-
+        /*
+         * public List<Billing> getTableShowcostumerBilling(DataSet dataSet)
+         * Auxiliary method for get of the data base all the billings of a costumer, return a list with the necesary information
+         */
         public List<Billing> getTableShowcostumerBilling(DataSet dataSet)
         {
             int idBilling = -1;
             int tax = -1;
             int costStorage = 0; //In the case that it is null, is the same than a 0
             int discount = -1;
-            int freight = -1; 
+            int freight = -1;
             List<Billing> listBilling = new List<Billing>();
             foreach (DataTable dataTable in dataSet.Tables)
             {
@@ -59,7 +62,8 @@ namespace CarguerosWebServer.Services
                     if (dataTable.Columns.Contains("discount") && row["discount"] != DBNull.Value) { discount = Convert.ToInt32(row["discount"]); }
                     if (dataTable.Columns.Contains("freight") && row["freight"] != DBNull.Value) { freight = Convert.ToInt32(row["freight"]); }
 
-                    listBilling.Add(new Billing{
+                    listBilling.Add(new Billing
+                    {
                         idBilling = idBilling,
                         tax = tax,
                         costStorage = costStorage,
@@ -72,26 +76,31 @@ namespace CarguerosWebServer.Services
             return listBilling;
         }
 
+        /*
+         * public void rebootVarShowcostumerBilling(ref int idBilling, ref int tax, ref int costStorage, ref int discount, ref int freight)
+         * Method for reboot the variables used in the method getTableShowcostumerBilling
+         */
         public void rebootVarShowcostumerBilling(ref int idBilling, ref int tax, ref int costStorage, ref int discount, ref int freight)
         {
-             idBilling = -1;
-             tax = -1;
-             costStorage = 0;
-             discount = -1;
-             freight = -1; 
+            idBilling = -1;
+            tax = -1;
+            costStorage = 0;
+            discount = -1;
+            freight = -1;
+        }
 
-        }  
-
+        /*
+         *  public Billing[] GetBilling()
+         *  GET Method for post in the cache a json array of elements
+         */
         public Billing[] GetBilling()
         {
             var ctx = HttpContext.Current;
-
             if (ctx != null)
             {
                 return (Billing[])ctx.Cache[CacheKey];
             }
             return null;
-       
-        }       
+        }
     }
 }

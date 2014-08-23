@@ -18,5 +18,6 @@ namespace CarguerosWebServer.Services
         public abstract Container[] leastUsedContainers(int ammount);
         public abstract Container[] mostUsedContainers(int ammount);
         public abstract Container[] containersInRoute();
+        public abstract Container[] containerVsRoute();
     }
 }

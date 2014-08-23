@@ -57,27 +57,7 @@ namespace CarguerosWebServer.Services
             return GetRoute();
         }
 
-        public override Route[] showRoutes()
-        {
-            HttpContext.Current.Cache.Remove(CacheKey);
-            DataSet dataSet = mySQLConnection.makeQuery("CALL `View_Routes` ();");
-            List<Route> listRoute = getTableBestWorstRoutes(dataSet);
-            var ctx = HttpContext.Current;
-            if (ctx != null)
-            {
-                if (ctx.Cache[CacheKey] == null)
-                {
-                    ctx.Cache[CacheKey] = listRoute.ToArray();
-                }
-            }
-            return GetRoute();
-        }
-
-        private void rebootVarShowRoute(ref string name, ref int uses)
-        {
-            name = "-";
-            uses = -1;
-        }
+       
 
 
         public List<Route> getTableBestWorstRoutes(DataSet dataSet)
@@ -111,12 +91,35 @@ namespace CarguerosWebServer.Services
                         arrivalPoint = arrivalPoint,
                         uses = uses
                     });
-                    rebootVarShowRoute(ref  name, ref  uses);
+                    rebootVarBestWorstRoutes(ref  name, ref  uses);
                 }
             }
             return listRoute;
         }
 
+        private void rebootVarBestWorstRoutes(ref string name, ref int uses)
+        {
+            name = "-";
+            uses = -1;
+        }
+
+        public override Route[] showRoutes()
+        {
+            HttpContext.Current.Cache.Remove(CacheKey);
+            DataSet dataSet = mySQLConnection.makeQuery("CALL `View_Routes` ();");
+            List<Route> listRoute = getTableShowRoute(dataSet);
+            var ctx = HttpContext.Current;
+            if (ctx != null)
+            {
+                if (ctx.Cache[CacheKey] == null)
+                {
+                    ctx.Cache[CacheKey] = listRoute.ToArray();
+                }
+            }
+            return GetRoute();
+        }
+
+      
         
         public List<Route> getTableShowRoute(DataSet dataSet)
         {

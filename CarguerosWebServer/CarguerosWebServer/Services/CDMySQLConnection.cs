@@ -35,13 +35,15 @@ namespace CarguerosWebServer.Services
 
         public DataSet makeQuery(String procedure)
         {
-   
-            MySqlDataAdapter adapterSQL = new MySqlDataAdapter(procedure, connectionMySQL);
+
             
-            DataSet dataSetResult = new DataSet();
-            adapterSQL.Fill(dataSetResult);
-       
-            return dataSetResult;
+                MySqlDataAdapter adapterSQL = new MySqlDataAdapter(procedure, connectionMySQL);
+
+                DataSet dataSetResult = new DataSet();
+                adapterSQL.Fill(dataSetResult);
+
+                return dataSetResult;
+           
         }
 
         public long makePostQuery(String procedure)

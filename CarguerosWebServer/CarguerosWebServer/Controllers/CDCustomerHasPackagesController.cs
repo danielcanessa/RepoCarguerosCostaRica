@@ -56,9 +56,5 @@ namespace CarguerosWebServer.Controllers
         {
             return CustomerHasPackagesRepository.worstCustomers(ammount);
         }
-
-
-
-
     }
 }

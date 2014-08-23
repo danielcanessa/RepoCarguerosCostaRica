@@ -47,6 +47,17 @@ namespace CarguerosWebServer.Controllers
         }
 
         /*
+         * public Packages[] packageArrived(int account)
+         * Method that return a list of package that have a state of arrive
+         */
+        [HttpGet]
+        [ActionName("packageArrived")]
+        public Packages[] packageArrived()
+        {
+            return packagesRepository.packageArrived();
+        }
+
+        /*
          * public String createPackage(int weight, int size, String type, String price, String description, int account)
          * Method for create a new package, return the ID of the new package
          */
