@@ -91,6 +91,8 @@ namespace CarguerosWebServer.Services
                 {
                     if (dataTable.Columns.Contains("name") && row["name"] != DBNull.Value) { name = row["name"].ToString(); }
                     if (dataTable.Columns.Contains("Uses") && row["Uses"] != DBNull.Value) { uses = Convert.ToInt32(row["Uses"]); }
+                    if (dataTable.Columns.Contains("duration") && row["duration"] != DBNull.Value) { duration = Convert.ToInt32(row["duration"]); }
+                    if (dataTable.Columns.Contains("idRoute") && row["idRoute"] != DBNull.Value) { idRoute = Convert.ToInt32(row["idRoute"]); }
                     listRoute.Add(new Route
                     {
                         idRoute = idRoute,
@@ -103,7 +105,7 @@ namespace CarguerosWebServer.Services
                         arrivalPoint = arrivalPoint,
                         uses = uses
                     });
-                    rebootVarBestWorstRoutes(ref  name, ref  uses);
+                    rebootVarBestWorstRoutes(ref  name, ref  uses, ref duration, ref idRoute);
                 }
             }
             return listRoute;
@@ -113,10 +115,12 @@ namespace CarguerosWebServer.Services
          * private void rebootVarBestWorstRoutes(ref string name, ref int uses)
          * Auxiliar Method used in the Method getTableBestWorstRoutes, with the finality of reboot some variables
          */
-        private void rebootVarBestWorstRoutes(ref string name, ref int uses)
+        private void rebootVarBestWorstRoutes(ref string name, ref int uses, ref int duration, ref int idRoute)
         {
             name = "-";
             uses = -1;
+            duration = -1;
+            idRoute = -1;
         }
 
         /*
