@@ -10,21 +10,29 @@ namespace CarguerosWebServer.Services
 {
     public class CDAcessRoute : CDRouteRepository
     {
-         public const string CacheKey = "RouteStore";
+        //Cache key that represent Packages
+        public const string CacheKey = "RouteStore";
+        //Object of the class CDMYSQLConecctions
         CDMySQLConnection mySQLConnection = CDMySQLConnection.Instance;
 
         public CDAcessRoute()
-        {    
-      
+        {     
         }
 
+        /*
+         * public override int createRoute(String name, String exitPoint, String arrivalPoint , String price, int duration, int maxAmount)
+         * POST method for create new routes
+         */
         public override int createRoute(String name, String exitPoint, String arrivalPoint , String price, int duration, int maxAmount)
-        {
-          
+        {          
             mySQLConnection.makeQuery("CALL `Create_Route`('" + name + "', '" + exitPoint + "','" + arrivalPoint + "','" + price+ "'," + duration + "," + maxAmount + ");");
             return HttpContext.Current.Response.StatusCode;
         }
 
+        /*
+         * public override Route[] bestRoutes(int ammount)
+         * GET method that return a list of the best routes
+         */
         public override Route[] bestRoutes(int ammount)
         {
             HttpContext.Current.Cache.Remove(CacheKey);
@@ -41,6 +49,10 @@ namespace CarguerosWebServer.Services
             return GetRoute();
         }
 
+        /*
+         * public override Route[] worstRoutes(int ammount)
+         * GET method that return a list of the worst routes
+         */
         public override Route[] worstRoutes(int ammount)
         {
             HttpContext.Current.Cache.Remove(CacheKey);
@@ -57,9 +69,10 @@ namespace CarguerosWebServer.Services
             return GetRoute();
         }
 
-       
-
-
+        /*
+         * public List<Route> getTableBestWorstRoutes(DataSet dataSet)
+         * Auxiliar method that return a dataSet with the data that  are need in the methods worstRoutes() and bestRoutes()
+         */
         public List<Route> getTableBestWorstRoutes(DataSet dataSet)
         {
             int idRoute = -1;
@@ -72,7 +85,6 @@ namespace CarguerosWebServer.Services
             String exitPoint = "-";
             String arrivalPoint = "-";
             List<Route> listRoute = new List<Route>();
-
             foreach (DataTable dataTable in dataSet.Tables)
             {
                 foreach (DataRow row in dataTable.Rows)
@@ -97,12 +109,20 @@ namespace CarguerosWebServer.Services
             return listRoute;
         }
 
+        /*
+         * private void rebootVarBestWorstRoutes(ref string name, ref int uses)
+         * Auxiliar Method used in the Method getTableBestWorstRoutes, with the finality of reboot some variables
+         */
         private void rebootVarBestWorstRoutes(ref string name, ref int uses)
         {
             name = "-";
             uses = -1;
         }
 
+        /*
+         * public override Route[] showRoutes()
+         * GET method that return a list of all the routes
+         */
         public override Route[] showRoutes()
         {
             HttpContext.Current.Cache.Remove(CacheKey);
@@ -119,8 +139,10 @@ namespace CarguerosWebServer.Services
             return GetRoute();
         }
 
-      
-        
+        /*
+         * public List<Route> getTableShowRoute(DataSet dataSet)
+         * Auxiliar method that return a dataSet with the data that  is need in the method showRoutes()
+         */
         public List<Route> getTableShowRoute(DataSet dataSet)
         {
             int idRoute = -1;
@@ -133,7 +155,6 @@ namespace CarguerosWebServer.Services
             String exitPoint = "-";
             String arrivalPoint = "-";           
             List<Route> listRoute = new List<Route>();
-
             foreach (DataTable dataTable in dataSet.Tables)
             {
                 foreach (DataRow row in dataTable.Rows)
@@ -149,8 +170,6 @@ namespace CarguerosWebServer.Services
                     if (dataTable.Columns.Contains("name") && row["name"] != DBNull.Value) { name = row["name"].ToString(); ; }
                     if (dataTable.Columns.Contains("exit_point") && row["exit_point"] != DBNull.Value) { exitPoint = row["exit_point"].ToString(); ; }
                     if (dataTable.Columns.Contains("arrival_point") && row["arrival_point"] != DBNull.Value) { arrivalPoint = row["arrival_point"].ToString(); ; }
-                  
-
                     listRoute.Add(new Route
                     {
                           idRoute = idRoute,
@@ -169,6 +188,10 @@ namespace CarguerosWebServer.Services
             return listRoute;
         }
 
+        /*
+         * private void rebootVarShowRoute(ref int idRoute, ref double cost, ref int duration, ref int maxAmount, ref int customerAccount, ref string name, ref string exitPoint, ref string arrivalPoint)
+         * Auxiliar Method used in the Method getTableShowRoute, with the finality of reboot some variables
+         */
         private void rebootVarShowRoute(ref int idRoute, ref double cost, ref int duration, ref int maxAmount, ref int customerAccount, ref string name, ref string exitPoint, ref string arrivalPoint)
         {
             idRoute = -1;
@@ -182,16 +205,18 @@ namespace CarguerosWebServer.Services
            
         }
 
+        /*
+         *  public Route[] GetRoute()
+         *  GET Method for post in the cache a json array of elements
+         */
         public Route[] GetRoute()
         {
             var ctx = HttpContext.Current;
-
             if (ctx != null)
             {
                 return (Route[])ctx.Cache[CacheKey];
             }
-            return null;
-       
+            return null;       
         }       
     }
 }

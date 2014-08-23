@@ -145,7 +145,7 @@ namespace CarguerosWebServer.Services
 
         /*
          * public override Packages[] packagesUser(int account)
-         * GET method that return a list of all the package and some information about each package of an exactly user
+         * GET method that return a list of all the package and some information about each package of an exactly user (account = customer ID)
          */
         public override Packages[] packagesUser(int account)
         {
@@ -240,8 +240,7 @@ namespace CarguerosWebServer.Services
              size = -1;
              weight = -1;
              type = "-";
-             finalCost = -1;
-           
+             finalCost = -1;           
         }
 
         /*
@@ -264,6 +263,10 @@ namespace CarguerosWebServer.Services
             return GetPackages();
         }
 
+        /*
+         * public List<Packages> getTablePackageArrived(DataSet dataSet)
+         * Auxiliar method that return a dataSet with the data that  is need in the method packageArrived()
+         */
         public List<Packages> getTablePackageArrived(DataSet dataSet)
         {
             int idPackages = -1;
@@ -279,27 +282,18 @@ namespace CarguerosWebServer.Services
             String container = "-";
             String arrivalDate = "-";
             double finalCost = -1;
-
-           
-
             List<Packages> listPackages = new List<Packages>();
             foreach (DataTable dataTable in dataSet.Tables)
             {
                 foreach (DataRow row in dataTable.Rows)
                 {
                     if (dataTable.Columns.Contains("idPackages") && row["idPackages"] != DBNull.Value) { idPackages = Convert.ToInt32(row["idPackages"]); }
-                    if (dataTable.Columns.Contains("Description") && row["Description"] != DBNull.Value) { description = row["Description"].ToString(); }
-
-                 
+                    if (dataTable.Columns.Contains("Description") && row["Description"] != DBNull.Value) { description = row["Description"].ToString(); }                 
                     if (dataTable.Columns.Contains("price") && row["price"] != DBNull.Value)
-                    {
-                        price = float.Parse(row["price"].ToString(), System.Globalization.CultureInfo.InvariantCulture);
-                    }
+                    { price = float.Parse(row["price"].ToString(), System.Globalization.CultureInfo.InvariantCulture); }
                     if (dataTable.Columns.Contains("type") && row["type"] != DBNull.Value) { type = row["type"].ToString(); }
                     if (dataTable.Columns.Contains("size") && row["size"] != DBNull.Value) { size = Convert.ToInt32(row["size"]); }
                     if (dataTable.Columns.Contains("weight") && row["weight"] != DBNull.Value) { weight = Convert.ToInt32(row["weight"]); }
-
-
                     listPackages.Add(new Packages
                     {
                         account = account,
@@ -315,16 +309,18 @@ namespace CarguerosWebServer.Services
                         type = type,
                         customer = customer,
                         finalCost = finalCost
-
                     }
                     );
-
                     rebootVargetTablePackageArrived(ref size, ref price, ref  type, ref weight, ref idPackages, ref description);
                 }
             }
             return listPackages;
         }
 
+        /*
+         * private void rebootVargetTablePackageArrived(ref int size, ref double price, ref string type, ref int weight, ref int idPackages, ref string description)
+         * Auxiliar Method used in the Method getTablePackageArrived, with the finality of reboot some variables
+         */
         private void rebootVargetTablePackageArrived(ref int size, ref double price, ref string type, ref int weight, ref int idPackages, ref string description)
         {
             size = -1;
@@ -332,12 +328,13 @@ namespace CarguerosWebServer.Services
             type = "-";
             weight = -1;
             idPackages = -1;
-            description = "-";
-            
+            description = "-";            
         }
 
-       
-
+       /*
+        *  public Packages[] GetPackages()
+        *  GET Method for post in the cache a json array of elements
+        */
         public Packages[] GetPackages()
         {
             var ctx = HttpContext.Current;

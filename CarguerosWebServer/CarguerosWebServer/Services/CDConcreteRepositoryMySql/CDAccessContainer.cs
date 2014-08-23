@@ -156,8 +156,7 @@ namespace CarguerosWebServer.Services
                 {
                     if (dataTable.Columns.Contains("idContainer") && row["idContainer"] != DBNull.Value) { idContainer = Convert.ToInt32(row["idContainer"]); }
                     if (dataTable.Columns.Contains("idRoute") && row["idRoute"] != DBNull.Value) { route = Convert.ToInt32(row["idRoute"]); }
-
-
+                    if (dataTable.Columns.Contains("name") && row["name"] != DBNull.Value) { routeName = row["name"].ToString(); }
                     listContainer.Add(new Container
                     {
                         idContainer = idContainer,
