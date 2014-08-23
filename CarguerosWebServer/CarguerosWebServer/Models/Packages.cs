@@ -29,6 +29,8 @@ namespace CarguerosWebServer.Models
 
         public String container { get; set; }
 
-        public String arrivalDate { get; set; }        
+        public String arrivalDate { get; set; }
+
+        public double finalCost { get; set; }
     }
 }

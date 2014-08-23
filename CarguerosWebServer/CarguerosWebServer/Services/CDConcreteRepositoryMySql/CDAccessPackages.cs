@@ -79,7 +79,9 @@ namespace CarguerosWebServer.Services
             String arrivalDate = "-";
             int size = -1;
             int weight = -1;
-            String type = "-";            
+            String type = "-";
+            String description = "-";
+            double finalCost = -1;
             List<Packages> listPackages = new List<Packages>();
             foreach (DataTable dataTable in dataSet.Tables)
             {
@@ -96,6 +98,9 @@ namespace CarguerosWebServer.Services
                     if (dataTable.Columns.Contains("type") && row["type"] != DBNull.Value) { type = row["type"].ToString(); }
                     if (dataTable.Columns.Contains("size") && row["size"] != DBNull.Value) { size = Convert.ToInt32(row["size"]); }
                     if (dataTable.Columns.Contains("weight") && row["weight"] != DBNull.Value) { weight = Convert.ToInt32(row["weight"]); }
+                    if (dataTable.Columns.Contains("Cost") && row["Cost"] != DBNull.Value)
+                    { finalCost = float.Parse(row["Cost"].ToString(), System.Globalization.CultureInfo.InvariantCulture); }
+                    if (dataTable.Columns.Contains("Description") && row["Description"] != DBNull.Value) { description = row["Description"].ToString(); }
                     listPackages.Add(new Packages
                     {
                         account=account,
@@ -109,10 +114,11 @@ namespace CarguerosWebServer.Services
                         size = size,
                         price = price,
                         type = type,
-                        description = "-"
+                        description = description,
+                        finalCost = finalCost
                     }  
                     );
-                    rebootVargetTabledetailsPakages(ref idPackages, ref price, ref costumer, ref packageState, ref containerArrivalDate, ref container, ref arrivalDate);
+                    rebootVargetTabledetailsPakages(ref idPackages, ref price, ref costumer, ref packageState, ref containerArrivalDate, ref container, ref arrivalDate, ref finalCost,ref description);
                 }
             }
             return listPackages;
@@ -123,8 +129,8 @@ namespace CarguerosWebServer.Services
          * ref  String containerArrivalDate, ref  String container, ref  String arrivalDate)
          * Auxiliar Method used in the Method getTabledetailsPakages, with the finality of reboot some variables
          */
-        public void rebootVargetTabledetailsPakages(ref int idPackages, ref double price, ref  String costumer, ref  String packageState, 
-            ref  String containerArrivalDate, ref  String container, ref  String arrivalDate)
+        public void rebootVargetTabledetailsPakages(ref int idPackages, ref double price, ref  String costumer, ref  String packageState,
+            ref  String containerArrivalDate, ref  String container, ref  String arrivalDate, ref  double finalCost, ref String description)
         {
             idPackages = -1;
             price = -1;
@@ -133,6 +139,8 @@ namespace CarguerosWebServer.Services
             containerArrivalDate = "-";
             container = "-";
             arrivalDate = "-";
+            finalCost = -1;
+            description = "-";
         }
 
         /*
@@ -156,8 +164,8 @@ namespace CarguerosWebServer.Services
         }
 
         /*
-         * public List<Container> getTableContainersInRoute(DataSet dataSet)
-         * Auxiliar method that return a dataSet with the data that  is need in the method containersInRoute()
+         * public List<Packages> getTablePackagesPerUser(DataSet dataSet, int account)
+         * Auxiliar method that return a dataSet with the data that  is need in the method packagesUser()
          */
         public List<Packages> getTablePackagesPerUser(DataSet dataSet, int account)
         {
@@ -172,28 +180,25 @@ namespace CarguerosWebServer.Services
             int weight = -1;
             String type = "-";
             String customer = "-";
-
+            double finalCost = -1;
             List<Packages> listPackages = new List<Packages>();
             foreach (DataTable dataTable in dataSet.Tables)
             {
                 foreach (DataRow row in dataTable.Rows)
                 {
                     if (dataTable.Columns.Contains("idPackages") && row["idPackages"] != DBNull.Value) { idPackages = Convert.ToInt32(row["idPackages"]); }
-                    if (dataTable.Columns.Contains("description") && row["description"] != DBNull.Value) { description = row["description"].ToString(); }
-
+                    if (dataTable.Columns.Contains("Description") && row["Description"] != DBNull.Value) { description = row["Description"].ToString(); }
                     if (dataTable.Columns.Contains("package_state") && row["package_state"] != DBNull.Value) { packageState = row["package_state"].ToString(); }
                     if (dataTable.Columns.Contains("price") && row["price"] != DBNull.Value)
-                    {
-                        price = float.Parse(row["price"].ToString(), System.Globalization.CultureInfo.InvariantCulture);
-                    }
+                    { price = float.Parse(row["price"].ToString(), System.Globalization.CultureInfo.InvariantCulture); }
                     if (dataTable.Columns.Contains("Container_arrivalDate") && row["Container_arrivalDate"] != DBNull.Value) { containerArrivalDate = row["Container_arrivalDate"].ToString(); }
                     if (dataTable.Columns.Contains("Container") && row["Container"] != DBNull.Value) { container = row["Container"].ToString(); }
                     if (dataTable.Columns.Contains("Estimated_Date_Arrival") && row["Estimated_Date_Arrival"] != DBNull.Value) { arrivalDate = row["Estimated_Date_Arrival"].ToString(); }
                     if (dataTable.Columns.Contains("type") && row["type"] != DBNull.Value) { type = row["type"].ToString(); }
                     if (dataTable.Columns.Contains("size") && row["size"] != DBNull.Value) { size = Convert.ToInt32(row["size"]); }
                     if (dataTable.Columns.Contains("weight") && row["weight"] != DBNull.Value) { weight = Convert.ToInt32(row["weight"]); }
-
-
+                    if (dataTable.Columns.Contains("Cost") && row["Cost"] != DBNull.Value)
+                    { finalCost = float.Parse(row["Cost"].ToString(), System.Globalization.CultureInfo.InvariantCulture); }
                     listPackages.Add(new Packages
                     {
                         account=account,                        
@@ -207,19 +212,23 @@ namespace CarguerosWebServer.Services
                         size = size,
                         price = price,
                         type = type,      
-                        customer = customer
-                       
+                        customer = customer,
+                        finalCost = finalCost
                     }
                     );
-
-                    rebootVargetTablePackagesPerUser(ref  description,ref  idPackages, ref  packageState,ref containerArrivalDate ,ref container ,ref arrivalDate ,ref weight ,ref size ,ref price  ,ref  type); 
+                    rebootVargetTablePackagesPerUser(ref  description, ref  idPackages, ref  packageState, ref containerArrivalDate, ref container, ref arrivalDate, ref weight, ref size, ref price, ref  type, ref finalCost); 
                 }
             }
             return listPackages;
         }
 
-        private void rebootVargetTablePackagesPerUser( ref string description, ref int idPackages, ref string packageState, ref string containerArrivalDate, 
+        /*
+         * private void rebootVargetTablePackagesPerUser( ref string description, ref int idPackages, ref string packageState, ref string containerArrivalDate, 
             ref string container, ref string arrivalDate, ref int weight, ref int size, ref double price, ref string type)
+         * Auxiliar Method used in the Method getTableMostLeastUsedContainers, with the finality of reboot some variables
+         */
+        private void rebootVargetTablePackagesPerUser( ref string description, ref int idPackages, ref string packageState, ref string containerArrivalDate,
+            ref string container, ref string arrivalDate, ref int weight, ref int size, ref double price, ref string type, ref double finalCost)
         {
              idPackages = -1;
              description = "-";
@@ -231,9 +240,14 @@ namespace CarguerosWebServer.Services
              size = -1;
              weight = -1;
              type = "-";
+             finalCost = -1;
            
         }
 
+        /*
+         * public override Packages[] packageArrived()
+         * GET method that return a list of all the package that arrive to final destination
+         */
         public override Packages[] packageArrived()
         {
             HttpContext.Current.Cache.Remove(CacheKey);
@@ -263,7 +277,8 @@ namespace CarguerosWebServer.Services
             String packageState = "-";
             String containerArrivalDate = "-";
             String container = "-";
-            String arrivalDate = "-";  
+            String arrivalDate = "-";
+            double finalCost = -1;
 
            
 
@@ -298,7 +313,8 @@ namespace CarguerosWebServer.Services
                         size = size,
                         price = price,
                         type = type,
-                        customer = customer
+                        customer = customer,
+                        finalCost = finalCost
 
                     }
                     );
@@ -317,6 +333,7 @@ namespace CarguerosWebServer.Services
             weight = -1;
             idPackages = -1;
             description = "-";
+            
         }
 
        
