@@ -17,6 +17,9 @@ namespace CarguerosWebServer.Models
 
         public int uses { get; set; }
 
-        public String routeName { get; set; }  
+        public String routeName { get; set; }
+
+        public int idContainer_Manager { get; set; }
+        
     }
 }

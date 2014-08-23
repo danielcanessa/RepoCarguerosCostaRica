@@ -80,6 +80,7 @@ namespace CarguerosWebServer.Services
             int maxWeight = -1;
             int uses = -1;
             String routeName = "-";
+            int idContainer_Manager = -1;
             List<Container> listContainer = new List<Container>();
 
             foreach (DataTable dataTable in dataSet.Tables)
@@ -97,7 +98,8 @@ namespace CarguerosWebServer.Services
                         containerArrive = containerArrive,
                         maxWeight = maxWeight,
                         uses = uses,
-                        routeName = routeName
+                        routeName = routeName,
+                        idContainer_Manager = idContainer_Manager
                     }
                     );
                     rebootVarMostLeastUsedContainers(ref idContainer, ref uses);
@@ -148,6 +150,7 @@ namespace CarguerosWebServer.Services
             int maxWeight = -1;
             int uses = -1;
             String routeName = "-";
+            int idContainer_Manager = -1;
             List<Container> listContainer = new List<Container>();
 
             foreach (DataTable dataTable in dataSet.Tables)
@@ -164,7 +167,8 @@ namespace CarguerosWebServer.Services
                         containerArrive = containerArrive,
                         maxWeight = maxWeight,
                         uses = uses,
-                        routeName = routeName
+                        routeName = routeName,
+                        idContainer_Manager = idContainer_Manager
                     }
                     );
                     rebootVarContainersInRoute(ref idContainer, ref route);
@@ -213,6 +217,7 @@ namespace CarguerosWebServer.Services
             int maxWeight = -1;
             int uses = -1;
             String routeName = "-";
+            int idContainer_Manager = -1;
             List<Container> listContainer = new List<Container>();
 
             foreach (DataTable dataTable in dataSet.Tables)
@@ -226,7 +231,8 @@ namespace CarguerosWebServer.Services
                         containerArrive = containerArrive,
                         maxWeight = maxWeight,
                         uses = uses,
-                        routeName = routeName
+                        routeName = routeName,
+                        idContainer_Manager = idContainer_Manager
                     }
                     );
                     rebootVarContainerArrive(ref containerArrive);
@@ -275,6 +281,7 @@ namespace CarguerosWebServer.Services
             int containerArrive = -1;
             int maxWeight = -1;
             int uses = -1;
+            int idContainer_Manager = -1;
             String routeName = "-";
             List<Container> listContainer = new List<Container>();
             foreach (DataTable dataTable in dataSet.Tables)
@@ -291,7 +298,8 @@ namespace CarguerosWebServer.Services
                         containerArrive = containerArrive,
                         maxWeight = maxWeight,
                         uses = uses,
-                        routeName = routeName
+                        routeName = routeName,
+                        idContainer_Manager = idContainer_Manager
                     }
                     );
                     rebootVarContainerArrive(ref idContainer, ref routeName, ref uses);
@@ -310,6 +318,84 @@ namespace CarguerosWebServer.Services
             uses = -1;
             routeName = "-";
         }
+
+        /*
+         * public override Container[] arrivalContainerNotNotified()
+         * GET Method for return the containers that are'nt notified of arrival
+         */
+        public override Container[] arrivalContainerNotNotified()
+        {
+            HttpContext.Current.Cache.Remove(CacheKey);
+            DataSet dataSet = mySQLConnection.makeQuery("CALL `ArrivalContainerNotNotified`();");
+            List<Container> listContainer = getTableArrivalContainerNotNotified(dataSet);
+            var ctx = HttpContext.Current;
+            if (ctx != null)
+            {
+                if (ctx.Cache[CacheKey] == null)
+                {
+                    ctx.Cache[CacheKey] = listContainer.ToArray();
+                }
+            }
+            return GetContainer();
+        }
+
+        /*
+         * public List<Container> getTableArrivalContainerNotNotified(DataSet dataSet)
+         * Auxiliar method that return a dataSet with the data that  is need in the method arrivalContainerNotNotified()
+         */
+        public List<Container> getTableArrivalContainerNotNotified(DataSet dataSet)
+        {
+            int idContainer = -1;
+            int route = -1;
+            int containerArrive = -1;
+            int maxWeight = -1;
+            int uses = -1;
+            int idContainer_Manager = -1;
+            String routeName = "-";
+            List<Container> listContainer = new List<Container>();
+            foreach (DataTable dataTable in dataSet.Tables)
+            {
+                foreach (DataRow row in dataTable.Rows)
+                {
+                    if (dataTable.Columns.Contains("idContainer") && row["idContainer"] != DBNull.Value) { idContainer = Convert.ToInt32(row["idContainer"]); }
+                    if (dataTable.Columns.Contains("idContainer_Manager") && row["idContainer_Manager"] != DBNull.Value) { idContainer_Manager = Convert.ToInt32(row["idContainer_Manager"]); }
+                    listContainer.Add(new Container
+                    {
+                        idContainer = idContainer,
+                        route = route,
+                        containerArrive = containerArrive,
+                        maxWeight = maxWeight,
+                        uses = uses,
+                        routeName = routeName,
+                        idContainer_Manager = idContainer_Manager
+                    }
+                    );
+                    rebootVarArrivalContainerNotNotified(ref idContainer, ref idContainer_Manager);
+                }
+            }
+            return listContainer;
+        }
+
+        /*
+         * private void rebootVarArrivalContainerNotNotified(ref int idContainer, ref int idContainer_Manager)
+         * Auxiliar Method used in the Method getTableArrivalContainerNotNotified, with the finality of reboot some variables
+         */
+        private void rebootVarArrivalContainerNotNotified(ref int idContainer, ref int idContainer_Manager)
+        {
+            idContainer = -1;
+            idContainer_Manager = -1;
+        }
+
+        /*
+         * public override int setNotifiedContainerArrived(int idContainer)
+         * PUT method for set notified the arrival of a container, return the state of the trasaction (200 = OK)
+         */
+        public override int setNotifiedContainerArrived(int idContainerManager)
+        {
+            mySQLConnection.makeQuery("CALL `SetNotifiedContainerArrived`( " + idContainerManager + ");");
+            return HttpContext.Current.Response.StatusCode;
+        }
+
 
         /*
          *  public Container[] GetContainer()

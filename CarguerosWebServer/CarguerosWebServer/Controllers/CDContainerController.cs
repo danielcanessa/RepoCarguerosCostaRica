@@ -36,6 +36,17 @@ namespace CarguerosWebServer.Controllers
         }
 
         /*
+        * public Container[] arrivalContainerNotNotified()
+        * Method that verify all the containers that arent notify that arrive to it destination is complete
+        */
+        [HttpGet]
+        [ActionName("arrivalContainerNotNotified")]
+        public Container[] arrivalContainerNotNotified()
+        {
+            return containerRepository.arrivalContainerNotNotified();
+        }
+
+        /*
          * public Container[] leastUsedContainers(int ammount)
          * Method that return the least used containers list
          */
@@ -98,6 +109,25 @@ namespace CarguerosWebServer.Controllers
             {
                 return "fail";
             }
-        }   
+        }
+
+        /*
+         * public String setNotifiedContainerArrived(int idContainer)
+         * Method that update ContainerManager to Arrived
+         */
+        [HttpPut]
+        [ActionName("setNotifiedContainerArrived")]
+        public String setNotifiedContainerArrived(int idContainerManager)
+        {           
+            try
+            {
+                if (containerRepository.setNotifiedContainerArrived(idContainerManager) == 200) { return "Sucess"; }
+                else { return "fail"; }
+            }
+            catch (Exception)
+            {
+                return "fail";
+            }
+        }  
     }
 }
